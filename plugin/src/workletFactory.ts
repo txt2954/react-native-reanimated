@@ -5,8 +5,11 @@ import generate from '@babel/generator';
 import type {
   File as BabelFile,
   ExpressionStatement,
+  FunctionDeclaration,
   FunctionExpression,
   Identifier,
+  ImportDeclaration,
+  Program,
   ReturnStatement,
   VariableDeclaration,
 } from '@babel/types';
@@ -42,6 +45,10 @@ import { buildWorkletString } from './workletStringCode';
 import { globals } from './globals';
 import type { ReanimatedPluginPass, WorkletizableFunction } from './types';
 import { isRelease } from './utils';
+import { appendFileSync } from 'fs';
+import { env } from 'process';
+import path from 'path';
+import fs from 'fs';
 
 const REAL_VERSION = require('../../package.json').version;
 const MOCK_VERSION = 'x.y.z';
@@ -67,6 +74,11 @@ export function makeWorkletFactory(
 ): FunctionExpression {
   // Returns a new FunctionExpression which is a workletized version of provided
   // FunctionDeclaration, FunctionExpression, ArrowFunctionExpression or ObjectMethod.
+
+  // console.log(
+  //   'Function name',
+  //   (fun as NodePath<FunctionDeclaration>).node.id?.name
+  // );
 
   removeWorkletDirective(fun);
 
@@ -103,6 +115,83 @@ export function makeWorkletFactory(
   assert(transformed.ast, '[Reanimated] `transformed.ast` is undefined.');
 
   const variables = makeArrayFromCapturedBindings(transformed.ast, fun);
+
+  // console.log('Variables', variables);
+
+  const importVariables = variables.reduce((acc, variable) => {
+    const binding = fun.scope.getBinding(variable.name);
+    1;
+    let programPath: NodePath<Program> | null = null;
+    let tempFun: NodePath = fun;
+    while (tempFun.parentPath) {
+      if (tempFun.parentPath.isProgram()) {
+        programPath = tempFun.parentPath;
+        break;
+      }
+      tempFun = tempFun.parentPath;
+    }
+    // @ts-ignore
+    const imp: ImportDeclaration | undefined = programPath!.node.body.find(
+      (node) => {
+        if (node.type === 'ImportDeclaration') {
+          return node.specifiers.some((specifier) => {
+            if (specifier.type === 'ImportDefaultSpecifier') {
+              if (specifier.local.name === variable.name) {
+                return true;
+              }
+            }
+          });
+        }
+      }
+    );
+    const src = imp?.source.value;
+    if (
+      !src &&
+      (!binding ||
+        !binding.path.isImportSpecifier() ||
+        !binding.path.parentPath.isImportDeclaration())
+    ) {
+      return acc;
+    }
+
+    // @ts-ignore
+    const libraryName = src || binding.path.parentPath.node.source.value;
+    // @ts-ignore
+    // acc.push(state.filename + ' ' + variable.name + '\n');
+    const isPath = libraryName.startsWith('.');
+    const anotherName = isPath
+      ? path.resolve(path.resolve(state.filename!, '..'), libraryName)
+      : libraryName;
+
+    if (anotherName.includes('react-native-reanimated')) {
+      return acc;
+    }
+
+    // console.log(anotherName);
+    const readNames = fs
+      .readFileSync('_reanimated_paths.js', 'utf8')
+      .split('\n')
+      .map((str) => str.split(' '));
+
+    if (
+      readNames.some(
+        (pair) => anotherName === pair[0] && variable.name === pair[1]
+      )
+    ) {
+      return acc;
+    }
+    // console.log('anotherName', anotherName);
+    acc += anotherName + ' ' + variable.name + '\n';
+    console.log('Adding', anotherName, variable.name, 'from', state.filename);
+    return acc;
+  }, '');
+
+  // console.log('Imports', importVariables);
+
+  // WRITE_TO_FILE == 1
+  // if (process.env['WRITE_TO_FILE'] == '1') {
+  appendFileSync('_reanimated_paths.js', importVariables, 'utf8');
+  // }
 
   const functionName = makeWorkletName(fun);
   const functionIdentifier = identifier(functionName);
@@ -349,10 +438,19 @@ function makeArrayFromCapturedBindings(
   traverse(ast, {
     Identifier(path) {
       // we only capture variables that were declared outside of the scope
+      // console.log(
+      //   'Identifier',
+      //   path.node.name,
+      //   'isReferencedIdentifier',
+      //   path.isReferencedIdentifier()
+      // );
       if (!path.isReferencedIdentifier()) {
         return;
       }
+
       const name = path.node.name;
+      // const binding = path.scope.getOwnBinding(name);
+
       // if the function is named and was added to globals we don't want to add it to closure
       // hence we check if identifier has that name
       if (globals.has(name)) {

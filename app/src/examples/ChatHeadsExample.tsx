@@ -13,6 +13,10 @@ import {
   PanGestureHandlerGestureEvent,
 } from 'react-native-gesture-handler';
 
+import { MegaFunction } from 'library2';
+
+MegaFunction();
+
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
 
 function ChatHeads({

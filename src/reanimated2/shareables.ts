@@ -107,6 +107,9 @@ export function makeShareableCloneRecursive<T>(
   if (SHOULD_BE_USE_WEB) {
     return value;
   }
+  // if (depth >= DETECT_CYCLIC_OBJECT_DEPTH_THRESHOLD / 2) {
+  // console.log(value);
+  // }
   if (depth >= DETECT_CYCLIC_OBJECT_DEPTH_THRESHOLD) {
     // if we reach certain recursion depth we suspect that we are dealing with a cyclic object.
     // this type of objects are not supported and cannot be trasferred as shareable, so we
@@ -118,6 +121,7 @@ export function makeShareableCloneRecursive<T>(
     } else if (value === processedObjectAtThresholdDepth) {
       throw new Error(
         '[Reanimated] Trying to convert a cyclic object to a shareable. This is not supported.'
+        // + Object.entries(value)
       );
     }
   } else {
@@ -184,7 +188,14 @@ Offending code was: \`${getWorkletCode(value)}\``);
         }
 
         for (const [key, element] of Object.entries(value)) {
-          if (key === '__initData' && toAdapt.__initData !== undefined) {
+          if (
+            key === '__initData' &&
+            toAdapt.__initData !== undefined
+            // ||
+            // key === '__esModule'
+            // ||
+            // key === 'default'
+          ) {
             continue;
           }
           toAdapt[key] = makeShareableCloneRecursive(

@@ -9,6 +9,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { HyperFunction } from 'library1';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedG = Animated.createAnimatedComponent(G);
@@ -22,6 +23,7 @@ interface Point {
 function polarToCartesian(angle: number, radius: number, center: Point) {
   'worklet';
   const a = ((angle - 90) * Math.PI) / 180;
+  HyperFunction();
   return {
     x: center.x + radius * Math.cos(a),
     y: center.y + radius * Math.sin(a),

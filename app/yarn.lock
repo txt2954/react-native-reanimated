@@ -1209,6 +1209,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"library1@file:../../test-libs/library1/library1-1.0.0.tgz::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library1@file:../../test-libs/library1/library1-1.0.0.tgz#../../test-libs/library1/library1-1.0.0.tgz::hash=72464c&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: 10/e155b28a7b93adfa25b4641a4a33e14cc2ca5d8b58dfb3299ae2e6a112bc8d4f85de25824cdfec2d2b309c8ced4db901796621c415d68c1fc3ec2e355901b10c
+  languageName: node
+  linkType: hard
+
+"library2@file:../../test-libs/library2/library2-1.0.0.tgz::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library2@file:../../test-libs/library2/library2-1.0.0.tgz#../../test-libs/library2/library2-1.0.0.tgz::hash=3e06f6&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: 10/4beae728be252896bbaf1819bc38653b9559ed07c5f1fe03f1d1e5e6f71ad479e78349fb3d3d494c662661c57a02a7cf8121c5df1611b604d8506a8ba192d153
+  languageName: node
+  linkType: hard
+
+"library3@file:../../test-libs/library3/library3-1.0.0.tgz::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library3@file:../../test-libs/library3/library3-1.0.0.tgz#../../test-libs/library3/library3-1.0.0.tgz::hash=701961&locator=root-workspace-0b6124%40workspace%3A."
+  checksum: 10/c18bb6f0f3bfe3e8810ac7c3ad2f57ea86275bc27e8502e906e1c64f825822d21f3e43a777de078ab74f6ed168674bc3e721d8d83fef5b2da123964bdbad451a
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^6.0.0":
   version: 6.0.0
   resolution: "locate-path@npm:6.0.0"
@@ -1718,6 +1739,9 @@ __metadata:
     d3-shape: "npm:^3.2.0"
     eslint: "npm:^8.0.0-0"
     eslint-plugin-reanimated: "link:../eslintPlugin"
+    library1: "file:../../test-libs/library1/library1-1.0.0.tgz"
+    library2: "file:../../test-libs/library2/library2-1.0.0.tgz"
+    library3: "file:../../test-libs/library3/library3-1.0.0.tgz"
     patch-package: "npm:^7.0.0"
     prettier: "npm:^2.8.7"
     react-dom: "npm:18.0.0"

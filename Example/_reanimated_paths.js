@@ -1,0 +1,4 @@
+library1 HyperFunction
+react-native Platform
+library2 MegaFunction
+library3 SuperFunction

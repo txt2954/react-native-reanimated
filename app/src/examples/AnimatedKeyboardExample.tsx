@@ -11,6 +11,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { SuperFunction } from 'library3';
+
+SuperFunction();
 
 import React from 'react';
 

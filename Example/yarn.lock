@@ -2848,6 +2848,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4":
+  version: 4.17.4
+  resolution: "@types/lodash@npm:4.17.4"
+  checksum: 10/3ec19f9fc48200006e71733e08bcb1478b0398673657fcfb21a8643d41a80bcce09a01000077c3b23a3c6d86b9b314abe0672a8fdfc0fd66b893bd41955cfab8
+  languageName: node
+  linkType: hard
+
 "@types/node-forge@npm:^1.3.0":
   version: 1.3.11
   resolution: "@types/node-forge@npm:1.3.11"
@@ -3158,11 +3165,16 @@ __metadata:
     "@react-navigation/native": "npm:^6.1.9"
     "@react-navigation/native-stack": "npm:^6.9.17"
     "@types/jest": "npm:^29.2.1"
+    "@types/lodash": "npm:^4"
     "@types/react": "npm:^18.2.6"
     "@types/react-test-renderer": "npm:^18.0.0"
     babel-jest: "npm:^29.6.3"
     eslint: "npm:^8.0.0-0"
     jest: "npm:^29.6.3"
+    library1: "file:../../test-libs/library1/library1-1.0.0.tgz"
+    library2: "file:../../test-libs/library2/library2-1.0.0.tgz"
+    library3: "file:../../test-libs/library3/library3-1.0.0.tgz"
+    lodash: "npm:^4.17.21"
     patch-package: "npm:^8.0.0"
     prettier: "npm:2.8.8"
     react: "npm:18.2.0"
@@ -6954,6 +6966,27 @@ __metadata:
     prelude-ls: "npm:^1.2.1"
     type-check: "npm:~0.4.0"
   checksum: 10/2e4720ff79f21ae08d42374b0a5c2f664c5be8b6c8f565bb4e1315c96ed3a8acaa9de788ffed82d7f2378cf36958573de07ef92336cb5255ed74d08b8318c9ee
+  languageName: node
+  linkType: hard
+
+"library1@file:../../test-libs/library1/library1-1.0.0.tgz::locator=ReanimatedExample%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library1@file:../../test-libs/library1/library1-1.0.0.tgz#../../test-libs/library1/library1-1.0.0.tgz::hash=72464c&locator=ReanimatedExample%40workspace%3A."
+  checksum: 10/e155b28a7b93adfa25b4641a4a33e14cc2ca5d8b58dfb3299ae2e6a112bc8d4f85de25824cdfec2d2b309c8ced4db901796621c415d68c1fc3ec2e355901b10c
+  languageName: node
+  linkType: hard
+
+"library2@file:../../test-libs/library2/library2-1.0.0.tgz::locator=ReanimatedExample%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library2@file:../../test-libs/library2/library2-1.0.0.tgz#../../test-libs/library2/library2-1.0.0.tgz::hash=3e06f6&locator=ReanimatedExample%40workspace%3A."
+  checksum: 10/4beae728be252896bbaf1819bc38653b9559ed07c5f1fe03f1d1e5e6f71ad479e78349fb3d3d494c662661c57a02a7cf8121c5df1611b604d8506a8ba192d153
+  languageName: node
+  linkType: hard
+
+"library3@file:../../test-libs/library3/library3-1.0.0.tgz::locator=ReanimatedExample%40workspace%3A.":
+  version: 1.0.0
+  resolution: "library3@file:../../test-libs/library3/library3-1.0.0.tgz#../../test-libs/library3/library3-1.0.0.tgz::hash=701961&locator=ReanimatedExample%40workspace%3A."
+  checksum: 10/c18bb6f0f3bfe3e8810ac7c3ad2f57ea86275bc27e8502e906e1c64f825822d21f3e43a777de078ab74f6ed168674bc3e721d8d83fef5b2da123964bdbad451a
   languageName: node
   linkType: hard
 

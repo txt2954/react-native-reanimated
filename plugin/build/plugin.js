@@ -215,13 +215,13 @@ var require_workletStringCode = __commonJS({
       __setModuleDefault(result, mod);
       return result;
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+    var __importDefault2 = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildWorkletString = void 0;
     var core_1 = require("@babel/core");
-    var generator_1 = __importDefault(require("@babel/generator"));
+    var generator_1 = __importDefault2(require("@babel/generator"));
     var types_12 = require("@babel/types");
     var assert_1 = require("assert");
     var convertSourceMap = __importStar(require("convert-source-map"));
@@ -309,19 +309,22 @@ var require_workletStringCode = __commonJS({
 var require_workletFactory = __commonJS({
   "lib/workletFactory.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+    var __importDefault2 = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.makeWorkletFactory = void 0;
     var core_1 = require("@babel/core");
-    var generator_1 = __importDefault(require("@babel/generator"));
+    var generator_1 = __importDefault2(require("@babel/generator"));
     var types_12 = require("@babel/types");
     var assert_1 = require("assert");
     var path_1 = require("path");
     var workletStringCode_1 = require_workletStringCode();
     var globals_12 = require_globals();
     var utils_12 = require_utils();
+    var fs_12 = require("fs");
+    var path_2 = __importDefault2(require("path"));
+    var fs_2 = __importDefault2(require("fs"));
     var REAL_VERSION = require("../../package.json").version;
     var MOCK_VERSION = "x.y.z";
     var workletStringTransformPresets = [
@@ -357,6 +360,48 @@ var require_workletFactory = __commonJS({
       (0, assert_1.strict)(transformed, "[Reanimated] `transformed` is undefined.");
       (0, assert_1.strict)(transformed.ast, "[Reanimated] `transformed.ast` is undefined.");
       const variables = makeArrayFromCapturedBindings(transformed.ast, fun);
+      const importVariables = variables.reduce((acc, variable) => {
+        const binding = fun.scope.getBinding(variable.name);
+        1;
+        let programPath = null;
+        let tempFun = fun;
+        while (tempFun.parentPath) {
+          if (tempFun.parentPath.isProgram()) {
+            programPath = tempFun.parentPath;
+            break;
+          }
+          tempFun = tempFun.parentPath;
+        }
+        const imp = programPath.node.body.find((node) => {
+          if (node.type === "ImportDeclaration") {
+            return node.specifiers.some((specifier) => {
+              if (specifier.type === "ImportDefaultSpecifier") {
+                if (specifier.local.name === variable.name) {
+                  return true;
+                }
+              }
+            });
+          }
+        });
+        const src = imp === null || imp === void 0 ? void 0 : imp.source.value;
+        if (!src && (!binding || !binding.path.isImportSpecifier() || !binding.path.parentPath.isImportDeclaration())) {
+          return acc;
+        }
+        const libraryName = src || binding.path.parentPath.node.source.value;
+        const isPath = libraryName.startsWith(".");
+        const anotherName = isPath ? path_2.default.resolve(path_2.default.resolve(state.filename, ".."), libraryName) : libraryName;
+        if (anotherName.includes("react-native-reanimated")) {
+          return acc;
+        }
+        const readNames2 = fs_2.default.readFileSync("_reanimated_paths.js", "utf8").split("\n").map((str) => str.split(" "));
+        if (readNames2.some((pair) => anotherName === pair[0] && variable.name === pair[1])) {
+          return acc;
+        }
+        acc += anotherName + " " + variable.name + "\n";
+        console.log("Adding", anotherName, variable.name, "from", state.filename);
+        return acc;
+      }, "");
+      (0, fs_12.appendFileSync)("_reanimated_paths.js", importVariables, "utf8");
       const functionName = makeWorkletName(fun);
       const functionIdentifier = (0, types_12.identifier)(functionName);
       const clone = (0, types_12.cloneNode)(fun.node);
@@ -1014,6 +1059,9 @@ var require_webOptimization = __commonJS({
 });
 
 // lib/plugin.js
+var __importDefault = exports && exports.__importDefault || function(mod) {
+  return mod && mod.__esModule ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var autoworkletization_1 = require_autoworkletization();
 var types_1 = require_types();
@@ -1022,6 +1070,8 @@ var inlineStylesWarning_1 = require_inlineStylesWarning();
 var utils_1 = require_utils();
 var globals_1 = require_globals();
 var webOptimization_1 = require_webOptimization();
+var fs_1 = __importDefault(require("fs"));
+var readNames = [[]];
 module.exports = function() {
   function runWithTaggedExceptions(fun) {
     try {
@@ -1035,6 +1085,7 @@ module.exports = function() {
       runWithTaggedExceptions(() => {
         (0, globals_1.initializeGlobals)();
         utils_1.addCustomGlobals.call(this);
+        readNames = fs_1.default.readFileSync("_reanimated_paths.js", "utf8").split("\n").map((str) => str.split(" "));
       });
     },
     visitor: {
@@ -1052,6 +1103,13 @@ module.exports = function() {
         enter(path, state) {
           runWithTaggedExceptions(() => {
             (0, workletSubstitution_1.processIfWithWorkletDirective)(path, state) || (0, autoworkletization_1.processIfAutoworkletizableCallback)(path, state);
+            if (!state.filename.includes("react-native-reanimated/src") && "id" in path.node && path.node.id && readNames.some((pair) => state.filename.includes(pair[0]) && path.node.id.name === pair[1])) {
+              const splitPath = state.filename.split("/");
+              const index = splitPath.indexOf("node_modules");
+              const nicePath = splitPath.slice(index).join("/");
+              console.log("processing", path.node.id.name, "in", nicePath);
+              (0, workletSubstitution_1.processWorklet)(path, state);
+            }
           });
         }
       },
