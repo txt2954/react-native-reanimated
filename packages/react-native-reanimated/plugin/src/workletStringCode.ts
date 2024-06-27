@@ -60,6 +60,21 @@ export function buildWorkletString(
     '[Reanimated] `expression.body` is not a `BlockStatement`'
   );
 
+  const hasExpensiMark = closureVariables.some(
+    (variable) => variable.name === 'ExpensiMark'
+  );
+
+  if (hasExpensiMark) {
+    expression.body.body.unshift(
+      variableDeclaration('const', [
+        variableDeclarator(
+          identifier('ExpensiMark'),
+          memberExpression(thisExpression(), identifier('_mark'))
+        ),
+      ])
+    );
+  }
+
   const workletFunction = functionExpression(
     identifier(name),
     expression.params,

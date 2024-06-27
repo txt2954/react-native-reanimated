@@ -11,6 +11,7 @@ import { processInlineStylesWarning } from './inlineStylesWarning';
 import { addCustomGlobals } from './utils';
 import { initializeGlobals } from './globals';
 import { substituteWebCallExpression } from './webOptimization';
+import { processClass } from './class';
 
 module.exports = function (): PluginItem {
   function runWithTaggedExceptions(fun: () => void) {
@@ -55,6 +56,13 @@ module.exports = function (): PluginItem {
           runWithTaggedExceptions(() =>
             processInlineStylesWarning(path, state)
           );
+        },
+      },
+      ClassDeclaration: {
+        enter(path, state) {
+          runWithTaggedExceptions(() => {
+            processClass(path, state);
+          });
         },
       },
     },

@@ -239,6 +239,12 @@ var require_workletStringCode = __commonJS({
       const expression = (0, types_12.isFunctionDeclaration)(draftExpression) ? draftExpression : draftExpression.expression;
       (0, assert_1.strict)("params" in expression, "'params' property is undefined in 'expression'");
       (0, assert_1.strict)((0, types_12.isBlockStatement)(expression.body), "[Reanimated] `expression.body` is not a `BlockStatement`");
+      const hasExpensiMark = closureVariables.some((variable) => variable.name === "ExpensiMark");
+      if (hasExpensiMark) {
+        expression.body.body.unshift((0, types_12.variableDeclaration)("const", [
+          (0, types_12.variableDeclarator)((0, types_12.identifier)("ExpensiMark"), (0, types_12.memberExpression)((0, types_12.thisExpression)(), (0, types_12.identifier)("_mark")))
+        ]));
+      }
       const workletFunction = (0, types_12.functionExpression)((0, types_12.identifier)(name), expression.params, expression.body, expression.generator, expression.async);
       const code = (0, generator_1.default)(workletFunction).code;
       (0, assert_1.strict)(inputMap, "[Reanimated] `inputMap` is undefined.");
@@ -1106,6 +1112,83 @@ var require_webOptimization = __commonJS({
   }
 });
 
+// lib/class.js
+var require_class = __commonJS({
+  "lib/class.js"(exports2) {
+    "use strict";
+    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.processClass = void 0;
+    var core_1 = require("@babel/core");
+    var types_12 = require("@babel/types");
+    var generator_1 = __importDefault(require("@babel/generator"));
+    var types_2 = require_types();
+    var traverse_1 = __importDefault(require("@babel/traverse"));
+    var assert_1 = require("assert");
+    function processClass(path, state) {
+      var _a;
+      if (((_a = path.node.id) === null || _a === void 0 ? void 0 : _a.name) !== "ExpensiMark") {
+        return;
+      }
+      const code = (0, generator_1.default)(path.node).code;
+      const transformedCode = (0, core_1.transformSync)(code, {
+        plugins: ["@babel/plugin-transform-classes"],
+        filename: state.file.opts.filename,
+        ast: true,
+        babelrc: false,
+        configFile: false
+      });
+      (0, assert_1.strict)(transformedCode);
+      (0, assert_1.strict)(transformedCode.ast);
+      const ast = transformedCode.ast;
+      let fucktory;
+      (0, traverse_1.default)(ast, {
+        [types_2.WorkletizableFunction]: {
+          enter: (functionPath) => {
+            if (functionPath.parentPath.isObjectProperty()) {
+              return;
+            }
+            const workletDirective = (0, types_12.directive)((0, types_12.directiveLiteral)("worklet"));
+            if (functionPath.parentPath.isCallExpression()) {
+              const factoryCopy = (0, types_12.cloneNode)(functionPath.node, true);
+              factoryCopy.body.directives.push(workletDirective);
+              fucktory = (0, types_12.variableDeclaration)("const", [
+                (0, types_12.variableDeclarator)((0, types_12.identifier)("ExpensiMarkClassFucktory"), factoryCopy)
+              ]);
+              return;
+            }
+            const bodyPath = functionPath.get("body");
+            if (!bodyPath.isBlockStatement()) {
+              bodyPath.replaceWith((0, types_12.blockStatement)([(0, types_12.returnStatement)(bodyPath.node)]));
+            }
+            functionPath.node.body.directives.push(workletDirective);
+          }
+        }
+      });
+      const body = ast.program.body;
+      const clazz = body.pop();
+      const toPrimitive = body.pop();
+      body.unshift(body.pop());
+      body.unshift(toPrimitive);
+      body.push(clazz);
+      body.push(fucktory);
+      const transformedNewCode = (0, core_1.transformSync)((0, generator_1.default)(ast).code, {
+        ast: true,
+        filename: state.file.opts.filename
+      });
+      (0, assert_1.strict)(transformedNewCode);
+      (0, assert_1.strict)(transformedNewCode.ast);
+      const newAst = transformedNewCode.ast;
+      const parent = path.parent;
+      const index = parent.body.findIndex((node) => node === path.node);
+      parent.body.splice(index, 1, ...transformedNewCode.ast.program.body);
+    }
+    exports2.processClass = processClass;
+  }
+});
+
 // lib/plugin.js
 Object.defineProperty(exports, "__esModule", { value: true });
 var autoworkletization_1 = require_autoworkletization();
@@ -1115,6 +1198,7 @@ var inlineStylesWarning_1 = require_inlineStylesWarning();
 var utils_1 = require_utils();
 var globals_1 = require_globals();
 var webOptimization_1 = require_webOptimization();
+var class_1 = require_class();
 module.exports = function() {
   function runWithTaggedExceptions(fun) {
     try {
@@ -1151,6 +1235,13 @@ module.exports = function() {
       JSXAttribute: {
         enter(path, state) {
           runWithTaggedExceptions(() => (0, inlineStylesWarning_1.processInlineStylesWarning)(path, state));
+        }
+      },
+      ClassDeclaration: {
+        enter(path, state) {
+          runWithTaggedExceptions(() => {
+            (0, class_1.processClass)(path, state);
+          });
         }
       }
     }

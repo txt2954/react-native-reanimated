@@ -16979,6 +16979,7 @@ __metadata:
     "@babel/plugin-transform-template-literals": "npm:^7.0.0-0"
     "@babel/preset-env": "npm:^7.20.0"
     "@babel/preset-typescript": "npm:^7.16.7"
+    "@babel/traverse": "npm:^7.20.0"
     "@babel/types": "npm:^7.20.0"
     "@react-native/babel-preset": "npm:0.74.81"
     "@react-native/eslint-config": "npm:0.74.81"
