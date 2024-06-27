@@ -239,12 +239,22 @@ var require_workletStringCode = __commonJS({
       const expression = (0, types_12.isFunctionDeclaration)(draftExpression) ? draftExpression : draftExpression.expression;
       (0, assert_1.strict)("params" in expression, "'params' property is undefined in 'expression'");
       (0, assert_1.strict)((0, types_12.isBlockStatement)(expression.body), "[Reanimated] `expression.body` is not a `BlockStatement`");
-      const hasExpensiMark = closureVariables.some((variable) => variable.name === "ExpensiMark");
-      if (hasExpensiMark) {
-        expression.body.body.unshift((0, types_12.variableDeclaration)("const", [
-          (0, types_12.variableDeclarator)((0, types_12.identifier)("ExpensiMark"), (0, types_12.memberExpression)((0, types_12.thisExpression)(), (0, types_12.identifier)("_mark")))
-        ]));
-      }
+      const parsedClasses = /* @__PURE__ */ new Set();
+      (0, core_1.traverse)(fun, {
+        NewExpression(path) {
+          const constructorName = path.node.callee.name;
+          if (!closureVariables.some((variable) => variable.name === constructorName) || parsedClasses.has(constructorName)) {
+            return;
+          }
+          const index = closureVariables.findIndex((variable) => variable.name === constructorName);
+          closureVariables.splice(index, 1);
+          closureVariables.push((0, types_12.identifier)(constructorName + "ClassFucktory"));
+          expression.body.body.unshift((0, types_12.variableDeclaration)("const", [
+            (0, types_12.variableDeclarator)((0, types_12.identifier)(constructorName), (0, types_12.callExpression)((0, types_12.identifier)(constructorName + "ClassFucktory"), []))
+          ]));
+          parsedClasses.add(constructorName);
+        }
+      });
       const workletFunction = (0, types_12.functionExpression)((0, types_12.identifier)(name), expression.params, expression.body, expression.generator, expression.async);
       const code = (0, generator_1.default)(workletFunction).code;
       (0, assert_1.strict)(inputMap, "[Reanimated] `inputMap` is undefined.");
@@ -417,7 +427,7 @@ var require_workletFactory = __commonJS({
         (0, types_12.variableDeclaration)("const", [
           (0, types_12.variableDeclarator)(functionIdentifier, funExpression)
         ]),
-        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
+        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => variable.name.endsWith("ClassFucktory") ? (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), (0, types_12.memberExpression)((0, types_12.identifier)(variable.name.slice(0, -13)), (0, types_12.identifier)(variable.name))) : (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
         (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__workletHash"), false), (0, types_12.numericLiteral)(workletHash)))
       ];
       if (shouldIncludeInitData) {
@@ -1128,10 +1138,7 @@ var require_class = __commonJS({
     var traverse_1 = __importDefault(require("@babel/traverse"));
     var assert_1 = require("assert");
     function processClass(path, state) {
-      var _a;
-      if (((_a = path.node.id) === null || _a === void 0 ? void 0 : _a.name) !== "ExpensiMark") {
-        return;
-      }
+      const className = path.node.id.name;
       const code = (0, generator_1.default)(path.node).code;
       const transformedCode = (0, core_1.transformSync)(code, {
         plugins: ["@babel/plugin-transform-classes"],
@@ -1153,9 +1160,10 @@ var require_class = __commonJS({
             const workletDirective = (0, types_12.directive)((0, types_12.directiveLiteral)("worklet"));
             if (functionPath.parentPath.isCallExpression()) {
               const factoryCopy = (0, types_12.cloneNode)(functionPath.node, true);
+              factoryCopy.id = (0, types_12.identifier)(className + "ClassFucktory");
               factoryCopy.body.directives.push(workletDirective);
               fucktory = (0, types_12.variableDeclaration)("const", [
-                (0, types_12.variableDeclarator)((0, types_12.identifier)("ExpensiMarkClassFucktory"), factoryCopy)
+                (0, types_12.variableDeclarator)((0, types_12.identifier)(className + "ClassFucktory"), factoryCopy)
               ]);
               return;
             }
@@ -1174,18 +1182,78 @@ var require_class = __commonJS({
       body.unshift(toPrimitive);
       body.push(clazz);
       body.push(fucktory);
+      body.push((0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)((0, types_12.identifier)(className), (0, types_12.identifier)(className + "ClassFucktory")), (0, types_12.identifier)(className + "ClassFucktory"))));
       const transformedNewCode = (0, core_1.transformSync)((0, generator_1.default)(ast).code, {
         ast: true,
         filename: state.file.opts.filename
       });
       (0, assert_1.strict)(transformedNewCode);
       (0, assert_1.strict)(transformedNewCode.ast);
-      const newAst = transformedNewCode.ast;
       const parent = path.parent;
       const index = parent.body.findIndex((node) => node === path.node);
       parent.body.splice(index, 1, ...transformedNewCode.ast.program.body);
     }
     exports2.processClass = processClass;
+  }
+});
+
+// lib/file.js
+var require_file = __commonJS({
+  "lib/file.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.processIfWorkletFile = void 0;
+    var types_12 = require("@babel/types");
+    var class_1 = require_class();
+    function processIfWorkletFile(path, state) {
+      if (path.node.directives.some((functionDirective) => functionDirective.value.value === "worklet")) {
+        processWorkletFile(path, state);
+        path.node.directives = path.node.directives.filter((functionDirective) => functionDirective.value.value !== "worklet");
+      }
+    }
+    exports2.processIfWorkletFile = processIfWorkletFile;
+    function processWorkletFile(path, state) {
+      path.get("body").forEach((bodyPath) => {
+        if (bodyPath.isVariableDeclaration()) {
+          processVariableDeclaration(bodyPath);
+        }
+        if (bodyPath.isFunctionDeclaration()) {
+          appendWorkletDirective(bodyPath.node.body);
+        }
+      });
+      path.traverse({
+        ClassDeclaration(subPath) {
+          (0, class_1.processClass)(subPath, state);
+        }
+      });
+    }
+    function processVariableDeclaration(path) {
+      path.get("declarations").forEach((declaration) => {
+        const initPath = declaration.get("init");
+        if (initPath.isFunctionExpression()) {
+          appendWorkletDirective(initPath.node.body);
+        } else if (initPath.isArrowFunctionExpression()) {
+          const bodyPath = initPath.get("body");
+          if (bodyPath.isBlockStatement()) {
+            appendWorkletDirective(bodyPath.node);
+          } else {
+            bodyPath.replaceWith((0, types_12.blockStatement)([(0, types_12.returnStatement)(bodyPath.node)]));
+            appendWorkletDirective(bodyPath.node);
+          }
+        } else if (initPath.isObjectExpression()) {
+          initPath.node.properties.forEach((property) => {
+            if (property.type === "ObjectMethod") {
+              appendWorkletDirective(property.body);
+            }
+          });
+        }
+      });
+    }
+    function appendWorkletDirective(node) {
+      if (!node.directives.some((functionDirective) => functionDirective.value.value === "worklet")) {
+        node.directives.push((0, types_12.directive)((0, types_12.directiveLiteral)("worklet")));
+      }
+    }
   }
 });
 
@@ -1198,7 +1266,7 @@ var inlineStylesWarning_1 = require_inlineStylesWarning();
 var utils_1 = require_utils();
 var globals_1 = require_globals();
 var webOptimization_1 = require_webOptimization();
-var class_1 = require_class();
+var file_1 = require_file();
 module.exports = function() {
   function runWithTaggedExceptions(fun) {
     try {
@@ -1232,16 +1300,16 @@ module.exports = function() {
           });
         }
       },
+      Program: {
+        enter(path, state) {
+          runWithTaggedExceptions(() => {
+            (0, file_1.processIfWorkletFile)(path, state);
+          });
+        }
+      },
       JSXAttribute: {
         enter(path, state) {
           runWithTaggedExceptions(() => (0, inlineStylesWarning_1.processInlineStylesWarning)(path, state));
-        }
-      },
-      ClassDeclaration: {
-        enter(path, state) {
-          runWithTaggedExceptions(() => {
-            (0, class_1.processClass)(path, state);
-          });
         }
       }
     }

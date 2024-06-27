@@ -1,11 +1,14 @@
 import { transformSync } from '@babel/core';
 import type { NodePath } from '@babel/core';
 import {
+  assignmentExpression,
   blockStatement,
   cloneNode,
   directive,
   directiveLiteral,
+  expressionStatement,
   identifier,
+  memberExpression,
   returnStatement,
   variableDeclaration,
   variableDeclarator,
@@ -28,10 +31,8 @@ export function processClass(
   path: NodePath<ClassDeclaration>,
   state: ReanimatedPluginPass
 ) {
-  if (path.node.id?.name !== 'ExpensiMark') {
-    return;
-  }
-
+  // @ts-ignore dupa
+  const className = path.node.id.name;
   const code = generate(path.node).code;
 
   const transformedCode = transformSync(code, {
@@ -64,11 +65,11 @@ export function processClass(
             functionPath.node,
             true
           ) as FunctionExpression;
+          factoryCopy.id = identifier(className + 'ClassFucktory');
           factoryCopy.body.directives.push(workletDirective);
           fucktory = variableDeclaration('const', [
             variableDeclarator(
-              identifier('ExpensiMarkClassFucktory'),
-              // @ts-ignore dupa
+              identifier(className + 'ClassFucktory'),
               factoryCopy
             ),
           ]);
@@ -102,6 +103,19 @@ export function processClass(
   body.push(clazz!);
   body.push(fucktory!);
 
+  body.push(
+    expressionStatement(
+      assignmentExpression(
+        '=',
+        memberExpression(
+          identifier(className),
+          identifier(className + 'ClassFucktory')
+        ),
+        identifier(className + 'ClassFucktory')
+      )
+    )
+  );
+
   const transformedNewCode = transformSync(generate(ast).code, {
     ast: true,
     filename: state.file.opts.filename,
@@ -110,7 +124,7 @@ export function processClass(
   assert(transformedNewCode);
   assert(transformedNewCode.ast);
 
-  const newAst = transformedNewCode.ast;
+  // const newAst = transformedNewCode.ast;
 
   const parent = path.parent as Program;
 

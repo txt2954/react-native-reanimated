@@ -224,7 +224,15 @@ export function makeWorkletFactory(
         memberExpression(functionIdentifier, identifier('__closure'), false),
         objectExpression(
           variables.map((variable) =>
-            objectProperty(identifier(variable.name), variable, false, true)
+            variable.name.endsWith('ClassFucktory')
+              ? objectProperty(
+                  identifier(variable.name),
+                  memberExpression(
+                    identifier(variable.name.slice(0, -13)),
+                    identifier(variable.name)
+                  )
+                )
+              : objectProperty(identifier(variable.name), variable, false, true)
           )
         )
       )

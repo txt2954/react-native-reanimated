@@ -1,5 +1,5 @@
 import type { BabelFileResult, NodePath, PluginItem } from '@babel/core';
-import { transformSync } from '@babel/core';
+import { transformSync, traverse } from '@babel/core';
 import generate from '@babel/generator';
 import type {
   File as BabelFile,
@@ -9,6 +9,7 @@ import type {
   VariableDeclaration,
 } from '@babel/types';
 import {
+  callExpression,
   functionExpression,
   identifier,
   isArrowFunctionExpression,
@@ -60,20 +61,67 @@ export function buildWorkletString(
     '[Reanimated] `expression.body` is not a `BlockStatement`'
   );
 
-  const hasExpensiMark = closureVariables.some(
-    (variable) => variable.name === 'ExpensiMark'
-  );
+  const parsedClasses = new Set<string>();
 
-  if (hasExpensiMark) {
-    expression.body.body.unshift(
-      variableDeclaration('const', [
-        variableDeclarator(
-          identifier('ExpensiMark'),
-          memberExpression(thisExpression(), identifier('_mark'))
-        ),
-      ])
-    );
-  }
+  traverse(fun, {
+    NewExpression(path) {
+      // @ts-ignore dupa
+      const constructorName = path.node.callee.name;
+      if (
+        !closureVariables.some(
+          (variable) => variable.name === constructorName
+        ) ||
+        parsedClasses.has(constructorName)
+      ) {
+        return;
+      }
+      const index = closureVariables.findIndex(
+        (variable) => variable.name === constructorName
+      );
+      closureVariables.splice(index, 1);
+      closureVariables.push(identifier(constructorName + 'ClassFucktory'));
+      // @ts-ignore dupa
+      expression.body.body.unshift(
+        variableDeclaration('const', [
+          variableDeclarator(
+            identifier(constructorName),
+            callExpression(identifier(constructorName + 'ClassFucktory'), [])
+          ),
+        ])
+      );
+      parsedClasses.add(constructorName);
+    },
+  });
+
+  // const hasExpensiMark = closureVariables.some(
+  //   (variable) => variable.name === 'ExpensiMark'
+  // );
+
+  // if (hasExpensiMark) {
+  //   closureVariables.push(identifier('ExpensiMarkClassFucktory'));
+  //   closureVariables.push(identifier('ExpensiMarkSubClassClassFucktory'));
+  //   closureVariables = closureVariables.filter(
+  //     (variable) =>
+  //       variable.name !== 'ExpensiMark' &&
+  //       variable.name !== 'ExpensiMarkSubClass'
+  //   );
+  //   expression.body.body.unshift(
+  //     variableDeclaration('const', [
+  //       variableDeclarator(
+  //         identifier('ExpensiMark'),
+  //         callExpression(identifier('ExpensiMarkClassFucktory'), [])
+  //       ),
+  //     ])
+  //   );
+  //   expression.body.body.unshift(
+  //     variableDeclaration('const', [
+  //       variableDeclarator(
+  //         identifier('ExpensiMarkSubClass'),
+  //         callExpression(identifier('ExpensiMarkSubClassClassFucktory'), [])
+  //       ),
+  //     ])
+  //   );
+  // }
 
   const workletFunction = functionExpression(
     identifier(name),
