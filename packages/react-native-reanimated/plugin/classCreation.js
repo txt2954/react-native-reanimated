@@ -1,38 +1,20 @@
-'worklet';
-// class ExpensiMarkSubClass {
-//   constructor() {
-//     this.pupa = 1;
-//   }
-//   method() {
-//     console.log('Hello from ' + global._WORKLET);
-//     this.pupa += 1;
-//     console.log('this.pupa');
-//     console.log(this.pupa);
-//   }
-// }
+import { Button, StyleSheet, View } from 'react-native';
+import ExpensiMark from 'expensify-common/dist/ExpensiMark';
 
-// class ExpensiMark {
-//   constructor() {
-//     this.dupa = 1;
-//     this.subClass = new ExpensiMarkSubClass();
-//   }
-//   method() {
-//     console.log('Hello from ' + global._WORKLET);
-//     this.dupa += 1;
-//     console.log(this.dupa);
-//     this.subClass.method();
-//   }
-// }
+import React from 'react';
+import { runOnUI } from 'react-native-reanimated';
 
-// function foo() {
-//   function bar() {}
+const mark = new ExpensiMark();
 
-//   [].filter(() => true);
-// }
+export default function EmptyExample() {
+  const handlePress = () => {
+    runOnUI(() => {
+      'worklet';
+      const expensimark = new ExpensiMark();
+      const output = expensimark.replace('Hello *world*!');
+      console.log(output);
+    })();
+  };
 
-const str = {
-  foo() {
-    const a = { b() {} };
-  },
-  bar() {},
-};
+  return null;
+}

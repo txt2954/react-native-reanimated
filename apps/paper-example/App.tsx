@@ -1,17 +1,40 @@
-import { runOnUI, makeShareableCloneRecursive } from 'react-native-reanimated';
-import { ExpensiMark } from './expensiMark';
+import { Button, StyleSheet, View } from 'react-native';
+import ExpensiMark from 'expensify-common/dist/ExpensiMark';
 
-export default function App() {
-  function callback() {
-    'worklet';
-    const expensiMark = new ExpensiMark();
-    expensiMark.method();
-    expensiMark.method();
-  }
+import React from 'react';
+import { runOnUI, logger } from 'react-native-reanimated';
 
-  makeShareableCloneRecursive(callback);
+// const mark = new ExpensiMark();
 
-  runOnUI(callback)();
+export default function EmptyExample() {
+  const handlePress = () => {
+    runOnUI(() => {})();
+    try {
+      // console.log('converting');
+      // logger.log = true;
+      runOnUI(() => {
+        'worklet';
+        const expensimark = new ExpensiMark();
+        const output = expensimark.replace('Hello *world*!');
+        console.log(output);
+      })();
+    } finally {
+      // logger.log = false;
+      // console.log('converted');
+    }
+  };
 
-  return null;
+  return (
+    <View style={styles.container}>
+      <Button title="Press me" onPress={handlePress} />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

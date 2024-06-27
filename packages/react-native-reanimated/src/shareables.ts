@@ -99,11 +99,15 @@ const DETECT_CYCLIC_OBJECT_DEPTH_THRESHOLD = 30;
 // We use it to check if later on the function reenters with the same object
 let processedObjectAtThresholdDepth: unknown;
 
+export const logger = { log: false };
+
 export function makeShareableCloneRecursive<T>(
   value: any,
   shouldPersistRemote = false,
   depth = 0
 ): ShareableRef<T> {
+  if (logger.log) {
+  }
   if (SHOULD_BE_USE_WEB) {
     return value;
   }
@@ -136,22 +140,36 @@ export function makeShareableCloneRecursive<T>(
     } else {
       let toAdapt: any;
       if (Array.isArray(value)) {
+        if (logger.log) {
+          console.log('array');
+        }
         toAdapt = value.map((element) =>
           makeShareableCloneRecursive(element, shouldPersistRemote, depth + 1)
         );
         freezeObjectIfDev(value);
       } else if (isTypeFunction && !isWorkletFunction(value)) {
+        if (logger.log) {
+          console.log('remote function');
+        }
         // this is a remote function
         toAdapt = value;
         freezeObjectIfDev(value);
       } else if (isHostObject(value)) {
+        if (logger.log) {
+          console.log('host object');
+        }
         // for host objects we pass the reference to the object as shareable and
         // then recreate new host object wrapping the same instance on the UI thread.
         // there is no point of iterating over keys as we do for regular objects.
         toAdapt = value;
       } else if (isPlainJSObject(value) || isTypeFunction) {
         toAdapt = {};
+        let workletFunction = false;
         if (isWorkletFunction(value)) {
+          workletFunction = true;
+          if (logger.log) {
+            console.log('worklet function');
+          }
           if (__DEV__) {
             const babelVersion = value.__initData.version;
             if (babelVersion !== undefined && babelVersion !== jsVersion) {
@@ -183,6 +201,13 @@ Offending code was: \`${getWorkletCode(value)}\``);
           );
         }
 
+        if (logger.log && !workletFunction) {
+          console.log('plain object');
+        }
+
+        if (logger.log) {
+          console.log('object keys', Object.keys(value));
+        }
         for (const [key, element] of Object.entries(value)) {
           if (key === '__initData' && toAdapt.__initData !== undefined) {
             continue;
@@ -195,6 +220,9 @@ Offending code was: \`${getWorkletCode(value)}\``);
         }
         freezeObjectIfDev(value);
       } else if (value instanceof RegExp) {
+        if (logger.log) {
+          console.log('regex');
+        }
         const pattern = value.source;
         const flags = value.flags;
         const handle = makeShareableCloneRecursive({
@@ -206,6 +234,9 @@ Offending code was: \`${getWorkletCode(value)}\``);
         shareableMappingCache.set(value, handle);
         return handle as ShareableRef<T>;
       } else if (value instanceof Error) {
+        if (logger.log) {
+          console.log('error');
+        }
         const { name, message, stack } = value;
         const handle = makeShareableCloneRecursive({
           __init: () => {
@@ -220,8 +251,14 @@ Offending code was: \`${getWorkletCode(value)}\``);
         shareableMappingCache.set(value, handle);
         return handle as ShareableRef<T>;
       } else if (value instanceof ArrayBuffer) {
+        if (logger.log) {
+          console.log('array buffer');
+        }
         toAdapt = value;
       } else if (ArrayBuffer.isView(value)) {
+        if (logger.log) {
+          console.log('array view');
+        }
         // typed array (e.g. Int32Array, Uint8ClampedArray) or DataView
         const buffer = value.buffer;
         const typeName = value.constructor.name;
@@ -245,6 +282,9 @@ Offending code was: \`${getWorkletCode(value)}\``);
         shareableMappingCache.set(value, handle);
         return handle as ShareableRef<T>;
       } else {
+        if (logger.log) {
+          console.log('inaccessible object');
+        }
         // This is reached for object types that are not of plain Object.prototype.
         // We don't support such objects from being transferred as shareables to
         // the UI runtime and hence we replace them with "inaccessible object"

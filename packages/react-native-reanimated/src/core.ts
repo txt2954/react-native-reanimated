@@ -18,7 +18,11 @@ export { startMapper, stopMapper } from './mappers';
 export { runOnJS, runOnUI, executeOnUIRuntimeSync } from './threads';
 export { createWorkletRuntime, runOnRuntime } from './runtimes';
 export type { WorkletRuntime } from './runtimes';
-export { makeShareable, makeShareableCloneRecursive } from './shareables';
+export {
+  makeShareable,
+  makeShareableCloneRecursive,
+  logger,
+} from './shareables';
 export { makeMutable } from './mutables';
 
 const SHOULD_BE_USE_WEB = shouldBeUseWeb();

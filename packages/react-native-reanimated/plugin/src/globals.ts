@@ -20,8 +20,8 @@ const notCapturedIdentifiers = [
   'decodeURIComponent',
   'encodeURI',
   'encodeURIComponent',
-  'escape',
-  'unescape',
+  // 'escape',
+  // 'unescape',
 
   // Fundamental objects
   'Object',
@@ -102,6 +102,8 @@ const notCapturedIdentifiers = [
   'null',
   'this',
   'global',
+  'window',
+  'globalThis',
   'console',
   'performance',
   'queueMicrotask',

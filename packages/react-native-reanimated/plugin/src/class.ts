@@ -36,7 +36,10 @@ export function processClass(
   const code = generate(path.node).code;
 
   const transformedCode = transformSync(code, {
-    plugins: ['@babel/plugin-transform-classes'],
+    plugins: [
+      '@babel/plugin-transform-classes',
+      '@babel/plugin-transform-unicode-regex',
+    ],
     filename: state.file.opts.filename,
     ast: true,
     babelrc: false,
@@ -50,6 +53,8 @@ export function processClass(
 
   let fucktory: VariableDeclaration;
 
+  let hasHandledClass = false;
+
   traverse(ast, {
     [WorkletizableFunction]: {
       // @ts-expect-error I don't understand what TS's problem here is.
@@ -60,7 +65,7 @@ export function processClass(
 
         const workletDirective = directive(directiveLiteral('worklet'));
 
-        if (functionPath.parentPath.isCallExpression()) {
+        if (functionPath.parentPath.isCallExpression() && !hasHandledClass) {
           const factoryCopy = cloneNode(
             functionPath.node,
             true
@@ -73,6 +78,7 @@ export function processClass(
               factoryCopy
             ),
           ]);
+          hasHandledClass = true;
 
           return;
         }

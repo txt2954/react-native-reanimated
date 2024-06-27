@@ -1,67 +1,31 @@
-const _worklet_9586549089085_init_data = {
-  code: "function foo(){const a={b:function(){}};}",
+import { Button, StyleSheet, View } from 'react-native';
+import ExpensiMark from 'expensify-common/dist/ExpensiMark';
+import React from 'react';
+import { runOnUI } from 'react-native-reanimated';
+const mark = new ExpensiMark();
+const _worklet_10343022443447_init_data = {
+  code: "function anonymous(){const{ExpensiMarkClassFucktory}=this.__closure;const ExpensiMark=ExpensiMarkClassFucktory();const expensimark=new ExpensiMark();const output=expensimark.replace('Hello *world*!');console.log(output);}",
   location: "/Users/bigpoppe/swmansion/reanimated/monorepo/react-native-reanimated-monorepo/packages/react-native-reanimated/plugin/classCreation.js",
-  sourceMap: "{\"version\":3,\"names\":[\"foo\",\"a\",\"b\"],\"sources\":[\"/Users/bigpoppe/swmansion/reanimated/monorepo/react-native-reanimated-monorepo/packages/react-native-reanimated/plugin/classCreation.js\"],\"mappings\":\"AAiCE,SAAAA,GAAMA,CAAA,EACJ,KAAM,CAAAC,CAAC,CAAG,CAAEC,CAAC,SAAAA,CAAA,CAAG,CAAC,CAAE,CAAC,CACtB\",\"ignoreList\":[]}",
+  sourceMap: "{\"version\":3,\"names\":[\"anonymous\",\"ExpensiMarkClassFucktory\",\"__closure\",\"ExpensiMark\",\"expensimark\",\"output\",\"replace\",\"console\",\"log\"],\"sources\":[\"/Users/bigpoppe/swmansion/reanimated/monorepo/react-native-reanimated-monorepo/packages/react-native-reanimated/plugin/classCreation.js\"],\"mappings\":\"AAUY,SAAAA,SAAMA,CAAA,QAAAC,wBAAA,OAAAC,SAAA,CAEZ,KAAM,CAAAC,WAAW,CAAGF,wBAAiB,GACrC,KAAM,CAAAG,WAAS,KAAAD,WAAoB,GACnC,MAAAE,MAAY,CAAAD,WAAO,CAAAE,OAAA,mBACrBC,OAAA,CAAAC,GAAA,CAAAH,MAAA,E\",\"ignoreList\":[]}",
   version: "3.12.0"
 };
-const _worklet_7147588349779_init_data = {
-  code: "function bar(){}",
-  location: "/Users/bigpoppe/swmansion/reanimated/monorepo/react-native-reanimated-monorepo/packages/react-native-reanimated/plugin/classCreation.js",
-  sourceMap: "{\"version\":3,\"names\":[\"bar\"],\"sources\":[\"/Users/bigpoppe/swmansion/reanimated/monorepo/react-native-reanimated-monorepo/packages/react-native-reanimated/plugin/classCreation.js\"],\"mappings\":\"AAoCE,SAAAA,GAAOA,CAAA\",\"ignoreList\":[]}",
-  version: "3.12.0"
-};
-// class ExpensiMarkSubClass {
-//   constructor() {
-//     this.pupa = 1;
-//   }
-//   method() {
-//     console.log('Hello from ' + global._WORKLET);
-//     this.pupa += 1;
-//     console.log('this.pupa');
-//     console.log(this.pupa);
-//   }
-// }
-
-// class ExpensiMark {
-//   constructor() {
-//     this.dupa = 1;
-//     this.subClass = new ExpensiMarkSubClass();
-//   }
-//   method() {
-//     console.log('Hello from ' + global._WORKLET);
-//     this.dupa += 1;
-//     console.log(this.dupa);
-//     this.subClass.method();
-//   }
-// }
-
-// function foo() {
-//   function bar() {}
-
-//   [].filter(() => true);
-// }
-
-const str = {
-  foo: function () {
-    const _e = [new global.Error(), 1, -27];
-    const foo = function () {
-      const a = {
-        b() {}
+export default function EmptyExample() {
+  const handlePress = () => {
+    runOnUI(function () {
+      const _e = [new global.Error(), -2, -27];
+      const anonymous = function () {
+        const expensimark = new ExpensiMark();
+        const output = expensimark.replace('Hello *world*!');
+        console.log(output);
       };
-    };
-    foo.__closure = {};
-    foo.__workletHash = 9586549089085;
-    foo.__initData = _worklet_9586549089085_init_data;
-    foo.__stackDetails = _e;
-    return foo;
-  }(),
-  bar: function () {
-    const _e = [new global.Error(), 1, -27];
-    const bar = function () {};
-    bar.__closure = {};
-    bar.__workletHash = 7147588349779;
-    bar.__initData = _worklet_7147588349779_init_data;
-    bar.__stackDetails = _e;
-    return bar;
-  }()
-};
+      anonymous.__closure = {
+        ExpensiMarkClassFucktory: ExpensiMark.ExpensiMarkClassFucktory
+      };
+      anonymous.__workletHash = 10343022443447;
+      anonymous.__initData = _worklet_10343022443447_init_data;
+      anonymous.__stackDetails = _e;
+      return anonymous;
+    }())();
+  };
+  return null;
+}

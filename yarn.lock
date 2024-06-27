@@ -7332,6 +7332,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"awesome-phonenumber@npm:^5.4.0":
+  version: 5.11.0
+  resolution: "awesome-phonenumber@npm:5.11.0"
+  checksum: 10/c3485766c0f9b6b74f9f28ad7541cf58c1c0b35dc4bfec931177dd2bccac513f3940a062689e9d81b2133554c4b0940d247ccbf7956def693e4ee4846055ae73
+  languageName: node
+  linkType: hard
+
 "aws-sign2@npm:~0.7.0":
   version: 0.7.0
   resolution: "aws-sign2@npm:0.7.0"
@@ -8275,6 +8282,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"classnames@npm:2.5.0":
+  version: 2.5.0
+  resolution: "classnames@npm:2.5.0"
+  checksum: 10/729436ac76dffd1307c554a8092b89d137481795b1aedc47d2557b11b7ff45c933a4ec209c3f9e5fbc43e05c5426cf23f52e189aa2ac2681cca84fa92abe1c36
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -8370,6 +8384,17 @@ __metadata:
   version: 0.0.1
   resolution: "client-only@npm:0.0.1"
   checksum: 10/0c16bf660dadb90610553c1d8946a7fdfb81d624adea073b8440b7d795d5b5b08beb3c950c6a2cf16279365a3265158a236876d92bce16423c485c322d7dfaf8
+  languageName: node
+  linkType: hard
+
+"clipboard@npm:2.0.11":
+  version: 2.0.11
+  resolution: "clipboard@npm:2.0.11"
+  dependencies:
+    good-listener: "npm:^1.2.2"
+    select: "npm:^1.1.2"
+    tiny-emitter: "npm:^2.0.0"
+  checksum: 10/929e92c5667d53cb3beb9482d2e6fe7612588fb3c08982a6001a65ea306b38cd462412a902a7ced75dac3c2eac2e075f5d4be1297e0bf1a9e891e10bb7150b47
   languageName: node
   linkType: hard
 
@@ -9367,6 +9392,13 @@ __metadata:
   version: 1.0.0
   resolution: "delayed-stream@npm:1.0.0"
   checksum: 10/46fe6e83e2cb1d85ba50bd52803c68be9bd953282fa7096f51fc29edd5d67ff84ff753c51966061e5ba7cb5e47ef6d36a91924eddb7f3f3483b1c560f77a0020
+  languageName: node
+  linkType: hard
+
+"delegate@npm:^3.1.2":
+  version: 3.2.0
+  resolution: "delegate@npm:3.2.0"
+  checksum: 10/d943058fe05897228b158cbd1bab05164df28c8f54127873231d6b03b0a5acc1b3ee1f98ac70ccc9b79cd84aa47118a7de111fee2923753491583905069da27d
   languageName: node
   linkType: hard
 
@@ -10691,6 +10723,48 @@ __metadata:
     jest-message-util: "npm:^29.7.0"
     jest-util: "npm:^29.7.0"
   checksum: 10/63f97bc51f56a491950fb525f9ad94f1916e8a014947f8d8445d3847a665b5471b768522d659f5e865db20b6c2033d2ac10f35fcbd881a4d26407a4f6f18451a
+  languageName: node
+  linkType: hard
+
+"expensify-common@npm:2.0.29":
+  version: 2.0.29
+  resolution: "expensify-common@npm:2.0.29"
+  dependencies:
+    awesome-phonenumber: "npm:^5.4.0"
+    classnames: "npm:2.5.0"
+    clipboard: "npm:2.0.11"
+    html-entities: "npm:^2.5.2"
+    jquery: "npm:3.6.0"
+    localforage: "npm:^1.10.0"
+    lodash: "npm:4.17.21"
+    prop-types: "npm:15.8.1"
+    react: "npm:16.12.0"
+    react-dom: "npm:16.12.0"
+    semver: "npm:^7.6.2"
+    simply-deferred: "git+https://github.com/Expensify/simply-deferred.git#77a08a95754660c7bd6e0b6979fdf84e8e831bf5"
+    ua-parser-js: "npm:^1.0.37"
+  checksum: 10/c48cba23e78badefd1aa3a98877aa136ce9544ebc1a750f622fce2f7b1b6cded72a99427a0aadefb3229db7c0836459865841411388eb5c7c26060a7f978ae25
+  languageName: node
+  linkType: hard
+
+"expensify-common@patch:expensify-common@npm%3A2.0.29#~/.yarn/patches/expensify-common-npm-2.0.29-e0d11647e6.patch":
+  version: 2.0.29
+  resolution: "expensify-common@patch:expensify-common@npm%3A2.0.29#~/.yarn/patches/expensify-common-npm-2.0.29-e0d11647e6.patch::version=2.0.29&hash=ed96bd"
+  dependencies:
+    awesome-phonenumber: "npm:^5.4.0"
+    classnames: "npm:2.5.0"
+    clipboard: "npm:2.0.11"
+    html-entities: "npm:^2.5.2"
+    jquery: "npm:3.6.0"
+    localforage: "npm:^1.10.0"
+    lodash: "npm:4.17.21"
+    prop-types: "npm:15.8.1"
+    react: "npm:16.12.0"
+    react-dom: "npm:16.12.0"
+    semver: "npm:^7.6.2"
+    simply-deferred: "git+https://github.com/Expensify/simply-deferred.git#77a08a95754660c7bd6e0b6979fdf84e8e831bf5"
+    ua-parser-js: "npm:^1.0.37"
+  checksum: 10/3871ee58fa5a578961a7d4d09f7c346476dc6ef84697fb9080415ea72f473082615a9e4f25831047d2b2acfcc95ef60603616f032caf894ebab756cbf6824a65
   languageName: node
   linkType: hard
 
@@ -12031,6 +12105,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"good-listener@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "good-listener@npm:1.2.2"
+  dependencies:
+    delegate: "npm:^3.1.2"
+  checksum: 10/14a755ad2eeb5ca65b98359438a0bd0ed0ae27304913b1f0866e1424fdff957133644d455d03178fbcb0f83d2cdaae414cc9cbdfebf4bd04a690854cd4a657ee
+  languageName: node
+  linkType: hard
+
 "gopd@npm:^1.0.1":
   version: 1.0.1
   resolution: "gopd@npm:1.0.1"
@@ -12234,6 +12317,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-entities@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "html-entities@npm:2.5.2"
+  checksum: 10/4ec12ebdf2d5ba8192c68e1aef3c1e4a4f36b29246a0a88464fe278a54517d0196d3489af46a3145c7ecacb4fc5fd50497be19eb713b810acab3f0efcf36fdc2
+  languageName: node
+  linkType: hard
+
 "html-escaper@npm:^2.0.0":
   version: 2.0.2
   resolution: "html-escaper@npm:2.0.2"
@@ -12386,6 +12476,13 @@ __metadata:
   bin:
     image-size: bin/image-size.js
   checksum: 10/f28966dd3f6d4feccc4028400bb7e8047c28b073ab0aa90c7c53039288139dd416c6bc254a976d4bf61113d4bc84871786804113099701cbfe9ccf377effdb54
+  languageName: node
+  linkType: hard
+
+"immediate@npm:~3.0.5":
+  version: 3.0.6
+  resolution: "immediate@npm:3.0.6"
+  checksum: 10/f9b3486477555997657f70318cc8d3416159f208bec4cca3ff3442fd266bc23f50f0c9bd8547e1371a6b5e82b821ec9a7044a4f7b944798b25aa3cc6d5e63e62
   languageName: node
   linkType: hard
 
@@ -13823,6 +13920,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jquery@npm:3.6.0":
+  version: 3.6.0
+  resolution: "jquery@npm:3.6.0"
+  checksum: 10/9785a3a13718ae51a13394e9953cc321fc11fb820e98b92ad1e76bc81086e596b3e7627fd2f23db79f4088cc0862eb2541ad775ea75d3079cc1fec834c28d5ad
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -14153,6 +14257,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lie@npm:3.1.1":
+  version: 3.1.1
+  resolution: "lie@npm:3.1.1"
+  dependencies:
+    immediate: "npm:~3.0.5"
+  checksum: 10/c2c7d9dcc3a9aae641f41cde4e2e2cd571e4426b1f5915862781d77776672dcbca43461e16f4d382c9a300825c15e1a4923f1def3a5568d97577e077a3cecb44
+  languageName: node
+  linkType: hard
+
 "lighthouse-logger@npm:^1.0.0":
   version: 1.4.2
   resolution: "lighthouse-logger@npm:1.4.2"
@@ -14322,6 +14435,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"localforage@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "localforage@npm:1.10.0"
+  dependencies:
+    lie: "npm:3.1.1"
+  checksum: 10/d5c44be3a09169b013a3ebe252e678aaeb6938ffe72e9e12c199fd4307c1ec9d1a057ac2dfdfbb1379dfeec467a34ad0fc3ecd27489a2c43a154fb72b2822542
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^3.0.0":
   version: 3.0.0
   resolution: "locate-path@npm:3.0.0"
@@ -14392,7 +14514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.13, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
+"lodash@npm:4.17.21, lodash@npm:^4.17.13, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10/c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
@@ -16025,6 +16147,7 @@ __metadata:
     babel-jest: "npm:^29.6.3"
     common-app: "workspace:*"
     eslint: "npm:^8.57.0"
+    expensify-common: "patch:expensify-common@npm%3A2.0.29#~/.yarn/patches/expensify-common-npm-2.0.29-e0d11647e6.patch"
     jest: "npm:^29.6.3"
     patch-package: "npm:^8.0.0"
     prettier: "npm:2.8.8"
@@ -16579,7 +16702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.8.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -16786,6 +16909,20 @@ __metadata:
     shell-quote: "npm:^1.6.1"
     ws: "npm:^7"
   checksum: 10/90114565c9a55e3aa5af0f68895bec2cdefa3280e31ce6304c602c063db38ff7f597babf0ca89794b0fff153f6795e2f773c891405a7065cc8a1eec87ed3d4db
+  languageName: node
+  linkType: hard
+
+"react-dom@npm:16.12.0":
+  version: 16.12.0
+  resolution: "react-dom@npm:16.12.0"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+    object-assign: "npm:^4.1.1"
+    prop-types: "npm:^15.6.2"
+    scheduler: "npm:^0.18.0"
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 10/9ced2365cada3e7cfeaf287efd4032baf4fb52f7a8fa0a7b2d62796bf29b0b72a3f48db58eff386acdde01dfff67c6301fa03e34abc82ad92fecc91c2f3b8e26
   languageName: node
   linkType: hard
 
@@ -17352,6 +17489,17 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 10/39473e43f64eec92da35db9d4411f3887b368038670787d49dd23172eb3a29953eb13767d1bfa34cbe2665b6e25632cad146e362e8910ce33755d343537763ae
+  languageName: node
+  linkType: hard
+
+"react@npm:16.12.0":
+  version: 16.12.0
+  resolution: "react@npm:16.12.0"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+    object-assign: "npm:^4.1.1"
+    prop-types: "npm:^15.6.2"
+  checksum: 10/28aaec43e8cd024e50f5b7da225dfdbe24001a035020ad0ccdb7bd21c3e0c0462691233b0e907e7ff21153f01052f939a164e3e3779cf27b03f7daedf12fb26c
   languageName: node
   linkType: hard
 
@@ -17977,12 +18125,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"scheduler@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "scheduler@npm:0.18.0"
+  dependencies:
+    loose-envify: "npm:^1.1.0"
+    object-assign: "npm:^4.1.1"
+  checksum: 10/5e6da4509a6a93e9255afa8aa6dfdb085d4cd75dbaf8eaa5492a5a9d6cd20d62136c4d8d7514d7504da68ac7adbd6a1fa55017973dd1ca4c2e2c2bfb87c77284
+  languageName: node
+  linkType: hard
+
 "scheduler@npm:^0.23.0, scheduler@npm:^0.23.2":
   version: 0.23.2
   resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10/e8d68b89d18d5b028223edf090092846868a765a591944760942b77ea1f69b17235f7e956696efbb62c8130ab90af7e0949bfb8eba7896335507317236966bc9
+  languageName: node
+  linkType: hard
+
+"select@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "select@npm:1.1.2"
+  checksum: 10/4346151e94f226ea6131e44e68e6d837f3fdee64831b756dd657cc0b02f4cb5107f867cb34a1d1216ab7737d0bf0645d44546afb030bbd8d64e891f5e4c4814e
   languageName: node
   linkType: hard
 
@@ -18034,7 +18199,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
+"semver@npm:^7.0.0, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.2":
   version: 7.6.2
   resolution: "semver@npm:7.6.2"
   bin:
@@ -18280,6 +18445,13 @@ __metadata:
   dependencies:
     is-arrayish: "npm:^0.3.1"
   checksum: 10/c6dffff17aaa383dae7e5c056fbf10cf9855a9f79949f20ee225c04f06ddde56323600e0f3d6797e82d08d006e93761122527438ee9531620031c08c9e0d73cc
+  languageName: node
+  linkType: hard
+
+"simply-deferred@git+https://github.com/Expensify/simply-deferred.git#77a08a95754660c7bd6e0b6979fdf84e8e831bf5":
+  version: 3.0.0
+  resolution: "simply-deferred@https://github.com/Expensify/simply-deferred.git#commit=77a08a95754660c7bd6e0b6979fdf84e8e831bf5"
+  checksum: 10/42e94fef4613e50260113471c4539e6de027482871f45e568647bd165c421b7186392b942d349d57c292a2cd8bc9134ab712dc4c67780539a6bbd5b428ec5866
   languageName: node
   linkType: hard
 
@@ -19159,6 +19331,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-emitter@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "tiny-emitter@npm:2.1.0"
+  checksum: 10/75633f4de4f47f43af56aff6162f25b87be7efc6f669fda256658f3c3f4a216f23dc0d13200c6fafaaf1b0c7142f0201352fb06aec0b77f68aea96be898f4516
+  languageName: node
+  linkType: hard
+
 "tmp@npm:^0.0.33":
   version: 0.0.33
   resolution: "tmp@npm:0.0.33"
@@ -19604,6 +19783,13 @@ __metadata:
   version: 1.0.37
   resolution: "ua-parser-js@npm:1.0.37"
   checksum: 10/56508f2428ebac64382c4d41da14189e5013e3e2a5f5918aff4bee3ba77df1f4eaad6f81f90c24999f1cf12cc1596764684497fec07e0ff5182ce9a323a8c05b
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^1.0.37":
+  version: 1.0.38
+  resolution: "ua-parser-js@npm:1.0.38"
+  checksum: 10/f2345e9bd0f9c5f85bcaa434535fae88f4bb891538e568106f0225b2c2937fbfbeb5782bd22320d07b6b3d68b350b8861574c1d7af072ff9b2362fb72d326fd9
   languageName: node
   linkType: hard
 

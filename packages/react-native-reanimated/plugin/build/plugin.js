@@ -64,8 +64,6 @@ var require_globals = __commonJS({
       "decodeURIComponent",
       "encodeURI",
       "encodeURIComponent",
-      "escape",
-      "unescape",
       "Object",
       "Function",
       "Boolean",
@@ -122,6 +120,8 @@ var require_globals = __commonJS({
       "null",
       "this",
       "global",
+      "window",
+      "globalThis",
       "console",
       "performance",
       "queueMicrotask",
@@ -1141,7 +1141,10 @@ var require_class = __commonJS({
       const className = path.node.id.name;
       const code = (0, generator_1.default)(path.node).code;
       const transformedCode = (0, core_1.transformSync)(code, {
-        plugins: ["@babel/plugin-transform-classes"],
+        plugins: [
+          "@babel/plugin-transform-classes",
+          "@babel/plugin-transform-unicode-regex"
+        ],
         filename: state.file.opts.filename,
         ast: true,
         babelrc: false,
@@ -1151,6 +1154,7 @@ var require_class = __commonJS({
       (0, assert_1.strict)(transformedCode.ast);
       const ast = transformedCode.ast;
       let fucktory;
+      let hasHandledClass = false;
       (0, traverse_1.default)(ast, {
         [types_2.WorkletizableFunction]: {
           enter: (functionPath) => {
@@ -1158,13 +1162,14 @@ var require_class = __commonJS({
               return;
             }
             const workletDirective = (0, types_12.directive)((0, types_12.directiveLiteral)("worklet"));
-            if (functionPath.parentPath.isCallExpression()) {
+            if (functionPath.parentPath.isCallExpression() && !hasHandledClass) {
               const factoryCopy = (0, types_12.cloneNode)(functionPath.node, true);
               factoryCopy.id = (0, types_12.identifier)(className + "ClassFucktory");
               factoryCopy.body.directives.push(workletDirective);
               fucktory = (0, types_12.variableDeclaration)("const", [
                 (0, types_12.variableDeclarator)((0, types_12.identifier)(className + "ClassFucktory"), factoryCopy)
               ]);
+              hasHandledClass = true;
               return;
             }
             const bodyPath = functionPath.get("body");
