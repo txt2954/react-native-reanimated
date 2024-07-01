@@ -70,11 +70,11 @@ export function processClass(
             functionPath.node,
             true
           ) as FunctionExpression;
-          factoryCopy.id = identifier(className + 'ClassFucktory');
+          factoryCopy.id = identifier(className + 'ClassFactory');
           factoryCopy.body.directives.push(workletDirective);
           fucktory = variableDeclaration('const', [
             variableDeclarator(
-              identifier(className + 'ClassFucktory'),
+              identifier(className + 'ClassFactory'),
               factoryCopy
             ),
           ]);
@@ -115,9 +115,9 @@ export function processClass(
         '=',
         memberExpression(
           identifier(className),
-          identifier(className + 'ClassFucktory')
+          identifier(className + 'ClassFactory')
         ),
-        identifier(className + 'ClassFucktory')
+        identifier(className + 'ClassFactory')
       )
     )
   );

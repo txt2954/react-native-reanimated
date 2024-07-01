@@ -224,7 +224,7 @@ export function makeWorkletFactory(
         memberExpression(functionIdentifier, identifier('__closure'), false),
         objectExpression(
           variables.map((variable) =>
-            variable.name.endsWith('ClassFucktory')
+            variable.name.endsWith('ClassFactory')
               ? objectProperty(
                   identifier(variable.name),
                   memberExpression(

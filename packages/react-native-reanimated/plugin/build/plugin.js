@@ -248,9 +248,9 @@ var require_workletStringCode = __commonJS({
           }
           const index = closureVariables.findIndex((variable) => variable.name === constructorName);
           closureVariables.splice(index, 1);
-          closureVariables.push((0, types_12.identifier)(constructorName + "ClassFucktory"));
+          closureVariables.push((0, types_12.identifier)(constructorName + "ClassFactory"));
           expression.body.body.unshift((0, types_12.variableDeclaration)("const", [
-            (0, types_12.variableDeclarator)((0, types_12.identifier)(constructorName), (0, types_12.callExpression)((0, types_12.identifier)(constructorName + "ClassFucktory"), []))
+            (0, types_12.variableDeclarator)((0, types_12.identifier)(constructorName), (0, types_12.callExpression)((0, types_12.identifier)(constructorName + "ClassFactory"), []))
           ]));
           parsedClasses.add(constructorName);
         }
@@ -427,7 +427,7 @@ var require_workletFactory = __commonJS({
         (0, types_12.variableDeclaration)("const", [
           (0, types_12.variableDeclarator)(functionIdentifier, funExpression)
         ]),
-        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => variable.name.endsWith("ClassFucktory") ? (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), (0, types_12.memberExpression)((0, types_12.identifier)(variable.name.slice(0, -13)), (0, types_12.identifier)(variable.name))) : (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
+        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => variable.name.endsWith("ClassFactory") ? (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), (0, types_12.memberExpression)((0, types_12.identifier)(variable.name.slice(0, -13)), (0, types_12.identifier)(variable.name))) : (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
         (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__workletHash"), false), (0, types_12.numericLiteral)(workletHash)))
       ];
       if (shouldIncludeInitData) {
@@ -1164,10 +1164,10 @@ var require_class = __commonJS({
             const workletDirective = (0, types_12.directive)((0, types_12.directiveLiteral)("worklet"));
             if (functionPath.parentPath.isCallExpression() && !hasHandledClass) {
               const factoryCopy = (0, types_12.cloneNode)(functionPath.node, true);
-              factoryCopy.id = (0, types_12.identifier)(className + "ClassFucktory");
+              factoryCopy.id = (0, types_12.identifier)(className + "ClassFactory");
               factoryCopy.body.directives.push(workletDirective);
               fucktory = (0, types_12.variableDeclaration)("const", [
-                (0, types_12.variableDeclarator)((0, types_12.identifier)(className + "ClassFucktory"), factoryCopy)
+                (0, types_12.variableDeclarator)((0, types_12.identifier)(className + "ClassFactory"), factoryCopy)
               ]);
               hasHandledClass = true;
               return;
@@ -1187,7 +1187,7 @@ var require_class = __commonJS({
       body.unshift(toPrimitive);
       body.push(clazz);
       body.push(fucktory);
-      body.push((0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)((0, types_12.identifier)(className), (0, types_12.identifier)(className + "ClassFucktory")), (0, types_12.identifier)(className + "ClassFucktory"))));
+      body.push((0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)((0, types_12.identifier)(className), (0, types_12.identifier)(className + "ClassFactory")), (0, types_12.identifier)(className + "ClassFactory"))));
       const transformedNewCode = (0, core_1.transformSync)((0, generator_1.default)(ast).code, {
         ast: true,
         filename: state.file.opts.filename
@@ -1262,6 +1262,43 @@ var require_file = __commonJS({
   }
 });
 
+// lib/contextObject.js
+var require_contextObject = __commonJS({
+  "lib/contextObject.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.processIfWorkletContextObject = void 0;
+    var types_12 = require("@babel/types");
+    function processIfWorkletContextObject(path, state) {
+      let isWorkletContextObject = false;
+      path.traverse({
+        ObjectProperty(subPath) {
+          if ((0, types_12.isIdentifier)(subPath.node.key) && subPath.node.key.name === "__workletObject") {
+            isWorkletContextObject = true;
+            subPath.stop();
+          }
+        }
+      });
+      if (isWorkletContextObject) {
+        processWorkletContextObject(path, state);
+      }
+      return isWorkletContextObject;
+    }
+    exports2.processIfWorkletContextObject = processIfWorkletContextObject;
+    function processWorkletContextObject(path, _state) {
+      path.traverse({
+        ObjectProperty(subPath) {
+          if ((0, types_12.isIdentifier)(subPath.node.key) && subPath.node.key.name === "__workletObject") {
+            subPath.remove();
+          }
+        }
+      });
+      const workletObjectFactory = (0, types_12.functionExpression)(null, [], (0, types_12.blockStatement)([(0, types_12.returnStatement)((0, types_12.cloneNode)(path.node))], [(0, types_12.directive)((0, types_12.directiveLiteral)("worklet"))]));
+      path.node.properties.push((0, types_12.objectProperty)((0, types_12.identifier)("__workletObjectFactory"), workletObjectFactory));
+    }
+  }
+});
+
 // lib/plugin.js
 Object.defineProperty(exports, "__esModule", { value: true });
 var autoworkletization_1 = require_autoworkletization();
@@ -1272,6 +1309,7 @@ var utils_1 = require_utils();
 var globals_1 = require_globals();
 var webOptimization_1 = require_webOptimization();
 var file_1 = require_file();
+var contextObject_1 = require_contextObject();
 module.exports = function() {
   function runWithTaggedExceptions(fun) {
     try {
@@ -1302,6 +1340,13 @@ module.exports = function() {
         enter(path, state) {
           runWithTaggedExceptions(() => {
             (0, workletSubstitution_1.processIfWithWorkletDirective)(path, state) || (0, autoworkletization_1.processIfAutoworkletizableCallback)(path, state);
+          });
+        }
+      },
+      ObjectExpression: {
+        enter(path, state) {
+          runWithTaggedExceptions(() => {
+            (0, contextObject_1.processIfWorkletContextObject)(path, state);
           });
         }
       },

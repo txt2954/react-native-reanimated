@@ -79,13 +79,13 @@ export function buildWorkletString(
         (variable) => variable.name === constructorName
       );
       closureVariables.splice(index, 1);
-      closureVariables.push(identifier(constructorName + 'ClassFucktory'));
+      closureVariables.push(identifier(constructorName + 'ClassFactory'));
       // @ts-ignore dupa
       expression.body.body.unshift(
         variableDeclaration('const', [
           variableDeclarator(
             identifier(constructorName),
-            callExpression(identifier(constructorName + 'ClassFucktory'), [])
+            callExpression(identifier(constructorName + 'ClassFactory'), [])
           ),
         ])
       );
@@ -98,8 +98,8 @@ export function buildWorkletString(
   // );
 
   // if (hasExpensiMark) {
-  //   closureVariables.push(identifier('ExpensiMarkClassFucktory'));
-  //   closureVariables.push(identifier('ExpensiMarkSubClassClassFucktory'));
+  //   closureVariables.push(identifier('ExpensiMarkClassFactory'));
+  //   closureVariables.push(identifier('ExpensiMarkSubClassClassFactory'));
   //   closureVariables = closureVariables.filter(
   //     (variable) =>
   //       variable.name !== 'ExpensiMark' &&
@@ -109,7 +109,7 @@ export function buildWorkletString(
   //     variableDeclaration('const', [
   //       variableDeclarator(
   //         identifier('ExpensiMark'),
-  //         callExpression(identifier('ExpensiMarkClassFucktory'), [])
+  //         callExpression(identifier('ExpensiMarkClassFactory'), [])
   //       ),
   //     ])
   //   );
@@ -117,7 +117,7 @@ export function buildWorkletString(
   //     variableDeclaration('const', [
   //       variableDeclarator(
   //         identifier('ExpensiMarkSubClass'),
-  //         callExpression(identifier('ExpensiMarkSubClassClassFucktory'), [])
+  //         callExpression(identifier('ExpensiMarkSubClassClassFactory'), [])
   //       ),
   //     ])
   //   );
