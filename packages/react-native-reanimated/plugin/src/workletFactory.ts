@@ -228,7 +228,7 @@ export function makeWorkletFactory(
               ? objectProperty(
                   identifier(variable.name),
                   memberExpression(
-                    identifier(variable.name.slice(0, -13)),
+                    identifier(variable.name.slice(0, -12)),
                     identifier(variable.name)
                   )
                 )
