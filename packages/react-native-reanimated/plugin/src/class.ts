@@ -51,7 +51,7 @@ export function processClass(
 
   const ast = transformedCode.ast;
 
-  let fucktory: VariableDeclaration;
+  let factory: VariableDeclaration;
 
   let hasHandledClass = false;
 
@@ -72,7 +72,7 @@ export function processClass(
           ) as FunctionExpression;
           factoryCopy.id = identifier(className + 'ClassFactory');
           factoryCopy.body.directives.push(workletDirective);
-          fucktory = variableDeclaration('const', [
+          factory = variableDeclaration('const', [
             variableDeclarator(
               identifier(className + 'ClassFactory'),
               factoryCopy
@@ -107,7 +107,7 @@ export function processClass(
   body.unshift(toPrimitive!);
 
   body.push(clazz!);
-  body.push(fucktory!);
+  body.push(factory!);
 
   body.push(
     expressionStatement(

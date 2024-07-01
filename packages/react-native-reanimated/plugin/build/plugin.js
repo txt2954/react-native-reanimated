@@ -427,7 +427,7 @@ var require_workletFactory = __commonJS({
         (0, types_12.variableDeclaration)("const", [
           (0, types_12.variableDeclarator)(functionIdentifier, funExpression)
         ]),
-        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => variable.name.endsWith("ClassFactory") ? (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), (0, types_12.memberExpression)((0, types_12.identifier)(variable.name.slice(0, -13)), (0, types_12.identifier)(variable.name))) : (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
+        (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__closure"), false), (0, types_12.objectExpression)(variables.map((variable) => variable.name.endsWith("ClassFactory") ? (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), (0, types_12.memberExpression)((0, types_12.identifier)(variable.name.slice(0, -12)), (0, types_12.identifier)(variable.name))) : (0, types_12.objectProperty)((0, types_12.identifier)(variable.name), variable, false, true))))),
         (0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)(functionIdentifier, (0, types_12.identifier)("__workletHash"), false), (0, types_12.numericLiteral)(workletHash)))
       ];
       if (shouldIncludeInitData) {
@@ -1153,7 +1153,7 @@ var require_class = __commonJS({
       (0, assert_1.strict)(transformedCode);
       (0, assert_1.strict)(transformedCode.ast);
       const ast = transformedCode.ast;
-      let fucktory;
+      let factory;
       let hasHandledClass = false;
       (0, traverse_1.default)(ast, {
         [types_2.WorkletizableFunction]: {
@@ -1166,7 +1166,7 @@ var require_class = __commonJS({
               const factoryCopy = (0, types_12.cloneNode)(functionPath.node, true);
               factoryCopy.id = (0, types_12.identifier)(className + "ClassFactory");
               factoryCopy.body.directives.push(workletDirective);
-              fucktory = (0, types_12.variableDeclaration)("const", [
+              factory = (0, types_12.variableDeclaration)("const", [
                 (0, types_12.variableDeclarator)((0, types_12.identifier)(className + "ClassFactory"), factoryCopy)
               ]);
               hasHandledClass = true;
@@ -1186,7 +1186,7 @@ var require_class = __commonJS({
       body.unshift(body.pop());
       body.unshift(toPrimitive);
       body.push(clazz);
-      body.push(fucktory);
+      body.push(factory);
       body.push((0, types_12.expressionStatement)((0, types_12.assignmentExpression)("=", (0, types_12.memberExpression)((0, types_12.identifier)(className), (0, types_12.identifier)(className + "ClassFactory")), (0, types_12.identifier)(className + "ClassFactory"))));
       const transformedNewCode = (0, core_1.transformSync)((0, generator_1.default)(ast).code, {
         ast: true,
