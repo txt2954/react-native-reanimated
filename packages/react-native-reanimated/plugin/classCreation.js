@@ -11,7 +11,7 @@ export default function EmptyExample() {
     runOnUI(() => {
       'worklet';
       const expensimark = new ExpensiMark();
-      const output = expensimark.replace('Hello *world*!');
+      const output = expensimark.replace('www.wojtyla.pl');
       console.log(output);
     })();
   };

@@ -31,7 +31,9 @@ export function processClass(
   path: NodePath<ClassDeclaration>,
   state: ReanimatedPluginPass
 ) {
-  // @ts-ignore dupa
+  if (!path.node.id) {
+    return;
+  }
   const className = path.node.id.name;
   const code = generate(path.node).code;
 
