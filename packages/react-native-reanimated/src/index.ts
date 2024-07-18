@@ -19,6 +19,7 @@ export {
   getViewProp,
   executeOnUIRuntimeSync,
 } from './core';
+export { Worker } from './Worker';
 export type {
   GestureHandlers,
   AnimatedRef,
