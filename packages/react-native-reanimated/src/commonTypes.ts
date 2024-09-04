@@ -14,13 +14,23 @@ export interface StyleProps extends ViewStyle, TextStyle {
 }
 
 /**
+ * Our users sometimes try to assign to `sv.value.prop` and lose reactivity unexpectedly. By marking the return value of `value` as `Readonly` we can help them avoid that.
+ *
+ * Currently there's a bug in React Native types which doesn't allow readonly arrays as `transform` prop. Therefore we don't make arrays readonly yet.
+ */
+// type ReadValue<TValue> = TValue extends unknown[] ? TValue : Readonly<TValue>;
+type ReadValue<TValue> = Readonly<TValue>;
+
+/**
  * A value that can be used both on the [JavaScript thread](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/glossary#javascript-thread) and the [UI thread](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/glossary#ui-thread).
  *
- * Shared values are defined using [useSharedValue](https://docs.swmansion.com/react-native-reanimated/docs/core/useSharedValue) hook. You access and modify shared values by their `.value` property.
+ * Shared values are defined using [useSharedValue](https://docs.swmansion.com/react-native-reanimated/docs/core/useSharedValue) hook. You access and modify shared values with
+ * - `get()` and `set()` methods,
+ * - their `.value` property.
  */
 export interface SharedValue<Value = unknown> {
-  value: Value;
-  get(): Value;
+  value: ReadValue<Value>;
+  get(): ReadValue<Value>;
   set(value: Value | ((value: Value) => Value)): void;
   addListener: (listenerID: number, listener: (value: Value) => void) => void;
   removeListener: (listenerID: number) => void;
