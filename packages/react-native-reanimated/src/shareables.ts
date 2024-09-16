@@ -100,6 +100,8 @@ const DETECT_CYCLIC_OBJECT_DEPTH_THRESHOLD = 30;
 // We use it to check if later on the function reenters with the same object
 let processedObjectAtThresholdDepth: unknown;
 
+export const verbose = { verbose: false };
+
 export function makeShareableCloneRecursive<T>(
   value: any,
   shouldPersistRemote = false,
@@ -128,6 +130,11 @@ export function makeShareableCloneRecursive<T>(
   const type = typeof value;
   const isTypeObject = type === 'object';
   const isTypeFunction = type === 'function';
+
+  if (isTypeObject) {
+    verbose.verbose && console.log('entries', Object.entries(value));
+  }
+
   if ((isTypeObject || isTypeFunction) && value !== null) {
     const cached = shareableMappingCache.get(value);
     if (cached === shareableMappingFlag) {
@@ -201,6 +208,7 @@ Offending code was: \`${getWorkletCode(value)}\``);
           if (key === '__initData' && toAdapt.__initData !== undefined) {
             continue;
           }
+          verbose.verbose && console.log('key', key);
           toAdapt[key] = makeShareableCloneRecursive(
             element,
             shouldPersistRemote,
