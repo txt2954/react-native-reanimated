@@ -3,25 +3,21 @@
 #ifdef RCT_NEW_ARCH_ENABLED
 #include <react/renderer/uimanager/UIManagerBinding.h>
 #include <react/renderer/uimanager/primitives.h>
-#if REACT_NATIVE_MINOR_VERSION >= 73 && defined(RCT_NEW_ARCH_ENABLED)
+#if REACT_NATIVE_MINOR_VERSION >= 73
 #include <react/utils/CoreFeatures.h>
-#endif
-#endif
+#endif // REACT_NATIVE_MINOR_VERSION >= 73
+#endif // RCT_NEW_ARCH_ENABLED
 
 #include <functional>
-#include <iomanip>
-#include <sstream>
-#include <thread>
-#include <unordered_map>
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #include <react/renderer/scheduler/Scheduler.h>
+#include <iomanip>
+#include "CollectionUtils.h"
 #include "ReanimatedCommitShadowNode.h"
 #include "ShadowTreeCloner.h"
 #endif
 
-#include "AsyncQueue.h"
-#include "CollectionUtils.h"
 #include "EventHandlerRegistry.h"
 #include "FeaturesConfig.h"
 #include "ReanimatedWorkletRuntimeDecorator.h"
@@ -43,12 +39,12 @@ bool CoreFeatures::useNativeState;
 namespace reanimated {
 
 NativeReanimatedModule::NativeReanimatedModule(
+    const std::shared_ptr<NativeWorkletsModule> &nativeWorkletsModule,
     jsi::Runtime &rnRuntime,
     const std::shared_ptr<JSScheduler> &jsScheduler,
     const std::shared_ptr<MessageQueueThread> &jsQueue,
     const std::shared_ptr<UIScheduler> &uiScheduler,
     const PlatformDepMethodsHolder &platformDepMethodsHolder,
-    const std::string &valueUnpackerCode,
     const bool isBridgeless,
     const bool isReducedMotion)
     : NativeReanimatedModuleSpec(
@@ -56,16 +52,17 @@ NativeReanimatedModule::NativeReanimatedModule(
       isBridgeless_(isBridgeless),
       isReducedMotion_(isReducedMotion),
       jsQueue_(jsQueue),
+      nativeWorkletsModule_(nativeWorkletsModule),
       jsScheduler_(jsScheduler),
       uiScheduler_(uiScheduler),
+      valueUnpackerCode_(nativeWorkletsModule->getValueUnpackerCode()),
       uiWorkletRuntime_(std::make_shared<WorkletRuntime>(
           rnRuntime,
           jsQueue,
           jsScheduler_,
           "Reanimated UI runtime",
           true /* supportsLocking */,
-          valueUnpackerCode)),
-      valueUnpackerCode_(valueUnpackerCode),
+          valueUnpackerCode_)),
       eventHandlerRegistry_(std::make_unique<EventHandlerRegistry>()),
       requestRender_(platformDepMethodsHolder.requestRender),
       onRenderCallback_([this](const double timestampMs) {
@@ -348,7 +345,7 @@ jsi::Value NativeReanimatedModule::getViewProp(
   const auto funPtr = std::make_shared<jsi::Function>(
       callback.getObject(rnRuntime).asFunction(rnRuntime));
   const auto shadowNode = shadowNodeFromValue(rnRuntime, shadowNodeWrapper);
-  uiScheduler_->scheduleOnUI([=]() {
+  uiScheduler_->scheduleOnUI([=, this]() {
     jsi::Runtime &uiRuntime = uiWorkletRuntime_->getJSIRuntime();
     const auto resultStr =
         obtainPropFromShadowNode(uiRuntime, propNameStr, shadowNode);
