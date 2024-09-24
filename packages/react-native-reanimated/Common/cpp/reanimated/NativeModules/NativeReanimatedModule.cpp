@@ -9,6 +9,7 @@
 #endif // RCT_NEW_ARCH_ENABLED
 
 #include <functional>
+#include <utility>
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #include <react/renderer/scheduler/Scheduler.h>
