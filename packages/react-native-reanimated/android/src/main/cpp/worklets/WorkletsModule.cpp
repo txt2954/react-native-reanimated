@@ -21,10 +21,12 @@ using namespace react;
 WorkletsModule::WorkletsModule(
     jni::alias_ref<WorkletsModule::javaobject> jThis,
     jsi::Runtime *rnRuntime,
+    const std::shared_ptr<facebook::react::CallInvoker> &jsCallInvoker,
     const std::string &valueUnpackerCode)
     : javaPart_(jni::make_global(jThis)),
       rnRuntime_(rnRuntime),
       nativeWorkletsModule_(std::make_shared<reanimated::NativeWorkletsModule>(
+          jsCallInvoker,
           valueUnpackerCode)) {
   RNRuntimeWorkletDecorator::decorate(*rnRuntime_, nativeWorkletsModule_);
 }
@@ -32,8 +34,12 @@ WorkletsModule::WorkletsModule(
 jni::local_ref<WorkletsModule::jhybriddata> WorkletsModule::initHybrid(
     jni::alias_ref<jhybridobject> jThis,
     jlong jsContext,
+    jni::alias_ref<facebook::react::CallInvokerHolder::javaobject>
+        jsCallInvokerHolder,
     const std::string &valueUnpackerCode) {
-  return makeCxxInstance(jThis, (jsi::Runtime *)jsContext, valueUnpackerCode);
+  auto jsCallInvoker = jsCallInvokerHolder->cthis()->getCallInvoker();
+  return makeCxxInstance(
+      jThis, (jsi::Runtime *)jsContext, jsCallInvoker, valueUnpackerCode);
 }
 
 void WorkletsModule::installJSIBindings() {

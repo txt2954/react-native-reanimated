@@ -18,8 +18,10 @@ using namespace facebook;
 
 namespace reanimated {
 
-NativeWorkletsModule::NativeWorkletsModule(const std::string &valueUnpackerCode)
-    : NativeWorkletsModuleSpec(nullptr),
+NativeWorkletsModule::NativeWorkletsModule(
+    const std::shared_ptr<facebook::react::CallInvoker> &jsCallInvoker,
+    const std::string &valueUnpackerCode)
+    : NativeWorkletsModuleSpec(jsCallInvoker),
       valueUnpackerCode_(valueUnpackerCode) {}
 
 NativeWorkletsModule::~NativeWorkletsModule() {}

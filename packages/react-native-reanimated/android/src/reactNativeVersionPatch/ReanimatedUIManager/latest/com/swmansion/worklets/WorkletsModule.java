@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.common.annotations.FrameworkAPI;
 import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.turbomodule.core.CallInvokerHolderImpl;
 import com.facebook.soloader.SoLoader;
 import com.swmansion.reanimated.NativeWorkletsModuleSpec;
 import java.util.Objects;
@@ -20,6 +21,7 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
   @DoNotStrip
   @SuppressWarnings("unused")
   private HybridData mHybridData;
+  private final ReactApplicationContext mContext;
 
   /**
    * @noinspection unused
@@ -32,10 +34,11 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
    * @noinspection JavaJniMissingFunction
    */
   @OptIn(markerClass = FrameworkAPI.class)
-  private native HybridData initHybrid(long jsContext, String valueUnpackerCode);
+  private native HybridData initHybrid(long jsContext, CallInvokerHolderImpl callInvokerHolder, String valueUnpackerCode);
 
   public WorkletsModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    mContext = reactContext;
   }
 
   /**
@@ -55,7 +58,7 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
 
     mHybridData =
         initHybrid(
-            Objects.requireNonNull(context.getJavaScriptContextHolder()).get(), valueUnpackerCode);
+            Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),    (CallInvokerHolderImpl) mContext.getJSCallInvokerHolder(),valueUnpackerCode);
 
     return true;
   }

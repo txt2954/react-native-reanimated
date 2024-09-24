@@ -28,6 +28,7 @@ public class NativeProxy extends NativeProxyCommon {
   @OptIn(markerClass = FrameworkAPI.class)
   public NativeProxy(ReactApplicationContext context, WorkletsModule workletsModule) {
     super(context);
+    // TODO: Try to omit `getCatalystInstance()` here.
     CallInvokerHolderImpl holder =
         (CallInvokerHolderImpl) context.getCatalystInstance().getJSCallInvokerHolder();
     LayoutAnimations LayoutAnimations = new LayoutAnimations(context);

@@ -8,7 +8,9 @@ namespace reanimated {
 
 class NativeWorkletsModule : public NativeWorkletsModuleSpec {
  public:
-  explicit NativeWorkletsModule(const std::string &valueUnpackerCode);
+  explicit NativeWorkletsModule(
+      const std::shared_ptr<facebook::react::CallInvoker> &jsCallInvoker,
+      const std::string &valueUnpackerCode);
 
   ~NativeWorkletsModule();
 

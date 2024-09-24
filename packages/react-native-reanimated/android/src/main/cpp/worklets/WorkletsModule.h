@@ -34,6 +34,8 @@ class WorkletsModule : public jni::HybridClass<WorkletsModule> {
   static jni::local_ref<jhybriddata> initHybrid(
       jni::alias_ref<jhybridobject> jThis,
       jlong jsContext,
+      jni::alias_ref<facebook::react::CallInvokerHolder::javaobject>
+          jsCallInvokerHolder,
       const std::string &valueUnpackerCode);
 
   static void registerNatives();
@@ -76,6 +78,7 @@ class WorkletsModule : public jni::HybridClass<WorkletsModule> {
   explicit WorkletsModule(
       jni::alias_ref<WorkletsModule::jhybridobject> jThis,
       jsi::Runtime *rnRuntime,
+      const std::shared_ptr<facebook::react::CallInvoker> &jsCallInvoker,
       const std::string &valueUnpackerCode);
 };
 
