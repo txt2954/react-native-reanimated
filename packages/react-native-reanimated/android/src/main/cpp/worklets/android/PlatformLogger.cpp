@@ -1,8 +1,8 @@
 #include <android/log.h>
 
-#include <reanimated/Tools/PlatformLogger.h>
+#include <worklets/Tools/PlatformLogger.h>
 
-constexpr const auto tag = "Reanimated";
+constexpr const auto tag = "Worklets";
 
 namespace reanimated {
 

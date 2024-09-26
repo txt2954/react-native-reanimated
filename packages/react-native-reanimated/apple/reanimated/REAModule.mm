@@ -7,9 +7,6 @@
 #import <React/RCTSurfacePresenter.h>
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <React/RCTSurfaceView.h>
-#if REACT_NATIVE_MINOR_VERSION < 73
-#import <React/RCTRuntimeExecutorFromBridge.h>
-#endif // REACT_NATIVE_MINOR_VERSION < 73
 #endif // RCT_NEW_ARCH_ENABLED
 
 #ifdef RCT_NEW_ARCH_ENABLED
@@ -61,7 +58,6 @@ typedef void (^AnimatedOperation)(REANodesManager *nodesManager);
   SingleInstanceChecker<REAModule> singleInstanceChecker_;
 #endif // NDEBUG
   bool hasListeners;
-  bool _isBridgeless;
 }
 
 @synthesize moduleRegistry = _moduleRegistry;
@@ -170,7 +166,6 @@ RCT_EXPORT_MODULE(ReanimatedModule);
 - (void)setSurfacePresenter:(id<RCTSurfacePresenterStub>)surfacePresenter
 {
   _surfacePresenter = surfacePresenter;
-  _isBridgeless = true;
 }
 
 - (void)setBridge:(RCTBridge *)bridge
@@ -282,20 +277,11 @@ RCT_EXPORT_MODULE(ReanimatedModule);
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
 {
   WorkletsModule *workletsModule = [_moduleRegistry moduleForName:"WorkletsModule"];
-  if (_isBridgeless) {
+  if ([workletsModule isBridgeless]) {
 #if REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED)
     RCTCxxBridge *cxxBridge = (RCTCxxBridge *)self.bridge;
     auto &rnRuntime = *(jsi::Runtime *)cxxBridge.runtime;
-    auto executorFunction = ([executor = _runtimeExecutor](std::function<void(jsi::Runtime & runtime)> &&callback) {
-      // Convert to Objective-C block so it can be captured properly.
-      __block auto callbackBlock = callback;
-
-      [executor execute:^(jsi::Runtime &runtime) {
-        callbackBlock(runtime);
-      }];
-    });
-    auto nativeReanimatedModule = reanimated::createReanimatedModuleBridgeless(
-        self, _moduleRegistry, rnRuntime, workletsModule, executorFunction);
+    auto nativeReanimatedModule = reanimated::createReanimatedModuleBridgeless(self, _moduleRegistry, workletsModule);
     [self attachReactEventListener];
     [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];
 #else // REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED)
@@ -307,8 +293,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
         : nullptr;
 
     if (jsiRuntime) {
-      auto nativeReanimatedModule =
-          reanimated::createReanimatedModule(self, self.bridge, self.bridge.jsCallInvoker, workletsModule);
+      auto nativeReanimatedModule = reanimated::createReanimatedModule(self, self.bridge, workletsModule);
       jsi::Runtime &rnRuntime = *jsiRuntime;
 
       [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];

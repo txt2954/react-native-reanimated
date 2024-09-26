@@ -1,5 +1,6 @@
 #pragma once
 
+#include <worklets/Tools/WorkletEventHandler.h>
 #include <worklets/WorkletRuntime/WorkletRuntime.h>
 
 #include <jsi/jsi.h>
@@ -14,8 +15,6 @@
 using namespace facebook;
 
 namespace worklets {
-
-class WorkletEventHandler;
 
 class EventHandlerRegistry {
   std::map<

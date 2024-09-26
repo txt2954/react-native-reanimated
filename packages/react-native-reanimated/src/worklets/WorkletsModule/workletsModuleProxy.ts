@@ -1,4 +1,23 @@
 'use strict';
 
+import type { ShareableRef } from '../../commonTypes';
+import type { WorkletRuntime } from '../../runtimes';
+
 /** Type of `__workletsModuleProxy` injected with JSI. */
-export interface WorkletsModuleProxy {}
+export interface WorkletsModuleProxy {
+  makeShareableClone<TValue>(
+    value: TValue,
+    shouldPersistRemote: boolean,
+    nativeStateSource?: object
+  ): ShareableRef<TValue>;
+  scheduleOnUI<TValue>(shareable: ShareableRef<TValue>): void;
+  executeOnUIRuntimeSync<TValue, R>(shareable: ShareableRef<TValue>): R;
+  createWorkletRuntime(
+    name: string,
+    initializer: ShareableRef<() => void>
+  ): WorkletRuntime;
+  scheduleOnRuntime<TValue>(
+    workletRuntime: WorkletRuntime,
+    worklet: ShareableRef<TValue>
+  ): void;
+}

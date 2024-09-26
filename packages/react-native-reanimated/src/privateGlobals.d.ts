@@ -15,8 +15,8 @@ import type {
 } from './commonTypes';
 import type { AnimatedStyle } from './helperTypes';
 import type { FrameCallbackRegistryUI } from './frameCallback/FrameCallbackRegistryUI';
-import type { ReanimatedModuleProxy } from './ReanimatedModule';
 import type { WorkletsModuleProxy } from './worklets';
+import type { ReanimatedModuleProxy } from './ReanimatedModule';
 import type { SensorContainer } from './SensorContainer';
 import type { LayoutAnimationsManager } from './layoutReanimation/animationsManager';
 import type { ProgressTransitionRegister } from './layoutReanimation/sharedTransitions';

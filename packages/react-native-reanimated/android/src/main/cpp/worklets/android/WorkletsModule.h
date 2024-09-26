@@ -15,7 +15,9 @@
 #include <react/jni/JMessageQueueThread.h>
 #include <react/jni/WritableNativeMap.h>
 
+#include <worklets/AndroidUIScheduler.h>
 #include <worklets/NativeModules/NativeWorkletsModule.h>
+#include <worklets/Tools/UIScheduler.h>
 
 #include <memory>
 #include <string>
@@ -34,7 +36,23 @@ class WorkletsModule : public jni::HybridClass<WorkletsModule> {
   static jni::local_ref<jhybriddata> initHybrid(
       jni::alias_ref<jhybridobject> jThis,
       jlong jsContext,
+      jni::alias_ref<facebook::react::CallInvokerHolder::javaobject>
+          jsCallInvokerHolder,
+      jni::alias_ref<AndroidUIScheduler::javaobject> androidUiScheduler,
+      jni::alias_ref<JavaMessageQueueThread::javaobject> messageQueueThread,
       const std::string &valueUnpackerCode);
+
+#if REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED)
+
+  static jni::local_ref<jhybriddata> initHybridBridgeless(
+      jni::alias_ref<jhybridobject> jThis,
+      jlong jsContext,
+      jni::alias_ref<react::JRuntimeExecutor::javaobject> runtimeExecutorHolder,
+      jni::alias_ref<AndroidUIScheduler::javaobject> androidUiScheduler,
+      jni::alias_ref<JavaMessageQueueThread::javaobject> messageQueueThread,
+      const std::string &valueUnpackerCode);
+
+#endif // REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED
 
   static void registerNatives();
 
@@ -76,7 +94,22 @@ class WorkletsModule : public jni::HybridClass<WorkletsModule> {
   explicit WorkletsModule(
       jni::alias_ref<WorkletsModule::jhybridobject> jThis,
       jsi::Runtime *rnRuntime,
+      const std::shared_ptr<facebook::react::CallInvoker> &jsCallInvoker,
+      const std::shared_ptr<reanimated::UIScheduler> &uiScheduler,
+      jni::alias_ref<JavaMessageQueueThread::javaobject> messageQueueThread,
       const std::string &valueUnpackerCode);
+
+#if REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED)
+
+  explicit WorkletsModule(
+      jni::alias_ref<WorkletsModule::jhybridobject> jThis,
+      jsi::Runtime *rnRuntime,
+      RuntimeExecutor runtimeExecutor,
+      const std::shared_ptr<UIScheduler> &uiScheduler,
+      jni::alias_ref<JavaMessageQueueThread::javaobject> messageQueueThread,
+      const std::string &valueUnpackerCode);
+
+#endif // REACT_NATIVE_MINOR_VERSION >= 74 && defined(RCT_NEW_ARCH_ENABLED
 };
 
 } // namespace reanimated

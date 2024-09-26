@@ -1,5 +1,5 @@
 #include <reanimated/LayoutAnimations/LayoutAnimationsManager.h>
-#include <reanimated/Tools/CollectionUtils.h>
+#include <worklets/Tools/CollectionUtils.h>
 
 #ifndef NDEBUG
 #include <utility>

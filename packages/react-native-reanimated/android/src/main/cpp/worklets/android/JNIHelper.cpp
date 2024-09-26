@@ -1,4 +1,4 @@
-#include <reanimated/android/JNIHelper.h>
+#include <worklets/android/JNIHelper.h>
 
 namespace reanimated {
 

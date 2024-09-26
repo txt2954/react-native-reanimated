@@ -4,7 +4,7 @@ import type { WorkletFunction } from './commonTypes';
 import { ReanimatedError, registerReanimatedError } from './errors';
 import { setupCallGuard, setupConsole } from './initializers';
 import { registerLoggerConfig } from './logger';
-import { ReanimatedModule } from './ReanimatedModule';
+import { WorkletsModule } from './worklets';
 import { shouldBeUseWeb } from './PlatformChecker';
 import {
   makeShareableCloneOnUIRecursive,
@@ -43,7 +43,7 @@ export function createWorkletRuntime(
   // Assign to a different variable as __reanimatedLoggerConfig is not a captured
   // identifier in the Worklet runtime.
   const config = __reanimatedLoggerConfig;
-  return ReanimatedModule.createWorkletRuntime(
+  return WorkletsModule.createWorkletRuntime(
     name,
     makeShareableCloneRecursive(() => {
       'worklet';
@@ -86,7 +86,7 @@ export function runOnRuntime<Args extends unknown[], ReturnValue>(
       );
   }
   return (...args) =>
-    ReanimatedModule.scheduleOnRuntime(
+    WorkletsModule.scheduleOnRuntime(
       workletRuntime,
       makeShareableCloneRecursive(() => {
         'worklet';

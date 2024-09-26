@@ -5,8 +5,11 @@ import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.RuntimeExecutor;
+import com.facebook.react.bridge.queue.MessageQueueThread;
 import com.facebook.react.common.annotations.FrameworkAPI;
 import com.facebook.react.module.annotations.ReactModule;
+import com.facebook.react.turbomodule.core.CallInvokerHolderImpl;
 import com.facebook.soloader.SoLoader;
 import com.swmansion.reanimated.NativeWorkletsModuleSpec;
 import java.util.Objects;
@@ -32,16 +35,39 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
    * @noinspection JavaJniMissingFunction
    */
   @OptIn(markerClass = FrameworkAPI.class)
-  private native HybridData initHybrid(long jsContext, String valueUnpackerCode);
+  private native HybridData initHybrid(
+      long jsContext,
+      CallInvokerHolderImpl jsCallInvokerHolder,
+      AndroidUIScheduler androidUIScheduler,
+      MessageQueueThread messageQueueThread,
+      String valueUnpackerCode);
+
+  /**
+   * @noinspection JavaJniMissingFunction
+   */
+  @OptIn(markerClass = FrameworkAPI.class)
+  private native HybridData initHybridBridgeless(
+      long jsContext,
+      RuntimeExecutor runtimeExecutor,
+      AndroidUIScheduler androidUIScheduler,
+      MessageQueueThread messageQueueThread,
+      String valueUnpackerCode);
+
+  private final AndroidUIScheduler mAndroidUIScheduler;
 
   public WorkletsModule(ReactApplicationContext reactContext) {
     super(reactContext);
+    mAndroidUIScheduler = new AndroidUIScheduler(reactContext);
   }
 
   /**
    * @noinspection JavaJniMissingFunction
    */
   protected native void installJSIBindings();
+
+  public AndroidUIScheduler getAndroidUIScheduler() {
+    return mAndroidUIScheduler;
+  }
 
   @Override
   public void initialize() {
@@ -52,10 +78,17 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
   @ReactMethod(isBlockingSynchronousMethod = true)
   public boolean installTurboModule(String valueUnpackerCode) {
     var context = getReactApplicationContext();
+    CallInvokerHolderImpl holder =
+        (CallInvokerHolderImpl) context.getCatalystInstance().getJSCallInvokerHolder();
+    ReanimatedMessageQueueThread messageQueueThread = new ReanimatedMessageQueueThread();
 
     mHybridData =
         initHybrid(
-            Objects.requireNonNull(context.getJavaScriptContextHolder()).get(), valueUnpackerCode);
+            Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),
+            holder,
+            mAndroidUIScheduler,
+            messageQueueThread,
+            valueUnpackerCode);
 
     return true;
   }
@@ -63,5 +96,6 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
   @Override
   public void invalidate() {
     super.invalidate();
+    mAndroidUIScheduler.deactivate();
   }
 }

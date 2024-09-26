@@ -36,34 +36,10 @@ class NativeReanimatedModule : public NativeReanimatedModuleSpec {
  public:
   NativeReanimatedModule(
       const std::shared_ptr<NativeWorkletsModule> &nativeWorkletsModule,
-      jsi::Runtime &rnRuntime,
-      const std::shared_ptr<JSScheduler> &jsScheduler,
-      const std::shared_ptr<MessageQueueThread> &jsQueue,
-      const std::shared_ptr<UIScheduler> &uiScheduler,
       const PlatformDepMethodsHolder &platformDepMethodsHolder,
-      const bool isBridgeless,
       const bool isReducedMotion);
 
   ~NativeReanimatedModule();
-
-  jsi::Value makeShareableClone(
-      jsi::Runtime &rt,
-      const jsi::Value &value,
-      const jsi::Value &shouldRetainRemote,
-      const jsi::Value &nativeStateSource) override;
-
-  void scheduleOnUI(jsi::Runtime &rt, const jsi::Value &worklet) override;
-  jsi::Value executeOnUIRuntimeSync(jsi::Runtime &rt, const jsi::Value &worklet)
-      override;
-
-  jsi::Value createWorkletRuntime(
-      jsi::Runtime &rt,
-      const jsi::Value &name,
-      const jsi::Value &initializer) override;
-  jsi::Value scheduleOnRuntime(
-      jsi::Runtime &rt,
-      const jsi::Value &workletRuntimeValue,
-      const jsi::Value &shareableWorkletValue) override;
 
   jsi::Value registerEventHandler(
       jsi::Runtime &rt,
@@ -172,11 +148,7 @@ class NativeReanimatedModule : public NativeReanimatedModuleSpec {
   }
 
   [[nodiscard]] inline jsi::Runtime &getUIRuntime() const {
-    return uiWorkletRuntime_->getJSIRuntime();
-  }
-
-  [[nodiscard]] inline bool isBridgeless() const {
-    return isBridgeless_;
+    return nativeWorkletsModule_->getUIRuntime();
   }
 
   [[nodiscard]] inline bool isReducedMotion() const {
@@ -200,14 +172,9 @@ class NativeReanimatedModule : public NativeReanimatedModuleSpec {
       const jsi::Value &props);
 #endif // RCT_NEW_ARCH_ENABLED
 
-  const bool isBridgeless_;
   const bool isReducedMotion_;
-  const std::shared_ptr<MessageQueueThread> jsQueue_;
   const std::shared_ptr<NativeWorkletsModule> nativeWorkletsModule_;
   const std::shared_ptr<JSScheduler> jsScheduler_;
-  const std::shared_ptr<UIScheduler> uiScheduler_;
-  const std::string valueUnpackerCode_;
-  std::shared_ptr<WorkletRuntime> uiWorkletRuntime_;
 
   std::unique_ptr<EventHandlerRegistry> eventHandlerRegistry_;
   const RequestRenderFunction requestRender_;
