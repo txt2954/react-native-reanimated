@@ -15,7 +15,7 @@
 #include <react/jni/JMessageQueueThread.h>
 #include <react/jni/WritableNativeMap.h>
 
-#include <worklets/AndroidUIScheduler.h>
+#include <worklets/android/AndroidUIScheduler.h>
 #include <worklets/NativeModules/NativeWorkletsModule.h>
 #include <worklets/Tools/UIScheduler.h>
 

@@ -1,14 +1,12 @@
 #pragma once
 
 #include <reanimated/NativeModules/NativeReanimatedModule.h>
-#include <reanimated/android/AndroidUIScheduler.h>
-#include <reanimated/android/JNIHelper.h>
 #include <reanimated/android/LayoutAnimations.h>
 
-#include <worklets/AndroidUIScheduler.h>
-#include <worklets/JNIHelper.h>
+#include <worklets/android/AndroidUIScheduler.h>
+#include <worklets/android/JNIHelper.h>
 #include <worklets/Tools/UIScheduler.h>
-#include <worklets/WorkletsModule.h>
+#include <worklets/android/WorkletsModule.h>
 
 #include <ReactCommon/CallInvokerHolder.h>
 #include <fbjni/fbjni.h>
