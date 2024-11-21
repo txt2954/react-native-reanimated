@@ -44,4 +44,4 @@ jobs:
         run: yarn add "react-native-reanimated@https://github.com/software-mansion/react-native-reanimated.git#workspace=react-native-reanimated&commit=${{ github.sha }}"
       - name: Build Android App
         working-directory: ${{ env.APP_NAME }}/android
-        run: ./gradlew assembleDebug --console=plain
+        run: ./gradlew --console verbose -d assembleDebug
