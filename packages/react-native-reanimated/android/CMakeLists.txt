@@ -2,7 +2,9 @@ project(Reanimated)
 cmake_minimum_required(VERSION 3.8)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+set(CMAKE_EXPORT_COMPILE_COMMANDS
+    ON
+    CACHE INTERNAL "")
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -15,25 +17,25 @@ string(APPEND CMAKE_CXX_FLAGS " -DREACT_NATIVE_MINOR_VERSION=${REACT_NATIVE_MINO
 string(APPEND CMAKE_CXX_FLAGS " -fexceptions -fno-omit-frame-pointer -frtti -fstack-protector-all -std=c++${CMAKE_CXX_STANDARD} -Wall -Werror")
 
 if(${IS_NEW_ARCHITECTURE_ENABLED})
-    string(APPEND CMAKE_CXX_FLAGS " -DRCT_NEW_ARCH_ENABLED")
+  string(APPEND CMAKE_CXX_FLAGS " -DRCT_NEW_ARCH_ENABLED")
 endif()
 
 if(${IS_REANIMATED_EXAMPLE_APP})
-    string(APPEND CMAKE_CXX_FLAGS " -DIS_REANIMATED_EXAMPLE_APP -Wpedantic")
+  string(APPEND CMAKE_CXX_FLAGS " -DIS_REANIMATED_EXAMPLE_APP -Wpedantic")
 endif()
 
 if(NOT ${CMAKE_BUILD_TYPE} MATCHES "Debug")
-    string(APPEND CMAKE_CXX_FLAGS " -DNDEBUG")
+  string(APPEND CMAKE_CXX_FLAGS " -DNDEBUG")
 endif()
 
 if(${JS_RUNTIME} STREQUAL "hermes")
-    string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_HERMES=1")
+  string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_HERMES=1")
 elseif(${JS_RUNTIME} STREQUAL "jsc")
-    string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_JSC=1")
+  string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_JSC=1")
 elseif(${JS_RUNTIME} STREQUAL "v8")
-    string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_V8=1")
+  string(APPEND CMAKE_CXX_FLAGS " -DJS_RUNTIME_V8=1")
 else()
-    message(FATAL_ERROR "Unknown JS runtime ${JS_RUNTIME}.")
+  message(FATAL_ERROR "Unknown JS runtime ${JS_RUNTIME}.")
 endif()
 
 # Resolves "CMake Warning: Manually-specified variables were not used by the
