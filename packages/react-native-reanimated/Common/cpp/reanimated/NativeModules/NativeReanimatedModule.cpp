@@ -54,23 +54,23 @@ namespace reanimated {
 NativeReanimatedModule::NativeReanimatedModule(
     const std::shared_ptr<NativeWorkletsModule> &nativeWorkletsModule,
     jsi::Runtime &rnRuntime,
-    const std::shared_ptr<JSScheduler> &jsScheduler,
     const std::shared_ptr<UIScheduler> &uiScheduler,
     const PlatformDepMethodsHolder &platformDepMethodsHolder,
     const bool isBridgeless,
     const bool isReducedMotion)
     : NativeReanimatedModuleSpec(
-          isBridgeless ? nullptr : jsScheduler->getJSCallInvoker()),
+          isBridgeless
+              ? nullptr
+              : nativeWorkletsModule->getJSScheduler()->getJSCallInvoker()),
       isBridgeless_(isBridgeless),
       isReducedMotion_(isReducedMotion),
       nativeWorkletsModule_(nativeWorkletsModule),
-      jsScheduler_(jsScheduler),
       uiScheduler_(uiScheduler),
       valueUnpackerCode_(nativeWorkletsModule->getValueUnpackerCode()),
       uiWorkletRuntime_(std::make_shared<WorkletRuntime>(
           rnRuntime,
           nativeWorkletsModule->getJSQueue(),
-          jsScheduler_,
+          nativeWorkletsModule->getJSScheduler(),
           "Reanimated UI runtime",
           true /* supportsLocking */,
           valueUnpackerCode_)),
@@ -81,7 +81,8 @@ NativeReanimatedModule::NativeReanimatedModule(
         onRender(timestampMs);
       }),
       animatedSensorModule_(platformDepMethodsHolder),
-      jsLogger_(std::make_shared<JSLogger>(jsScheduler_)),
+      jsLogger_(
+          std::make_shared<JSLogger>(nativeWorkletsModule->getJSScheduler())),
       layoutAnimationsManager_(
           std::make_shared<LayoutAnimationsManager>(jsLogger_)),
 #ifdef RCT_NEW_ARCH_ENABLED
@@ -232,7 +233,7 @@ jsi::Value NativeReanimatedModule::createWorkletRuntime(
   auto workletRuntime = std::make_shared<WorkletRuntime>(
       rt,
       nativeWorkletsModule_->getJSQueue(),
-      jsScheduler_,
+      nativeWorkletsModule_->getJSScheduler(),
       name.asString(rt).utf8(rt),
       false /* supportsLocking */,
       valueUnpackerCode_);
@@ -386,8 +387,8 @@ jsi::Value NativeReanimatedModule::getViewProp(
         const auto resultValue =
             obtainPropFunction_(uiRuntime, viewTagInt, propNameValue);
         const auto resultStr = resultValue.asString(uiRuntime).utf8(uiRuntime);
-
-        jsScheduler_->scheduleOnJS([=](jsi::Runtime &rnRuntime) {
+        const auto jsScheduler = nativeWorkletsModule_->getJSScheduler();
+        jsScheduler->scheduleOnJS([=](jsi::Runtime &rnRuntime) {
           const auto resultValue =
               jsi::String::createFromUtf8(rnRuntime, resultStr);
           funPtr->call(rnRuntime, resultValue);

@@ -2,6 +2,7 @@
 
 #include <cxxreact/MessageQueueThread.h>
 #include <worklets/NativeModules/NativeWorkletsModuleSpec.h>
+#include <worklets/Tools/JSScheduler.h>
 #include <worklets/Tools/SingleInstanceChecker.h>
 #include <worklets/WorkletRuntime/WorkletRuntime.h>
 #include <memory>
@@ -13,7 +14,8 @@ class NativeWorkletsModule : public NativeWorkletsModuleSpec {
  public:
   explicit NativeWorkletsModule(
       const std::string &valueUnpackerCode,
-      const std::shared_ptr<MessageQueueThread> &jsQueue);
+      const std::shared_ptr<MessageQueueThread> &jsQueue,
+      std::shared_ptr<JSScheduler> &&jsScheduler);
 
   ~NativeWorkletsModule();
 
@@ -31,9 +33,14 @@ class NativeWorkletsModule : public NativeWorkletsModuleSpec {
     return jsQueue_;
   }
 
+  [[nodiscard]] inline std::shared_ptr<JSScheduler> getJSScheduler() const {
+    return jsScheduler_;
+  }
+
  private:
   const std::string valueUnpackerCode_;
   const std::shared_ptr<MessageQueueThread> jsQueue_;
+  const std::shared_ptr<JSScheduler> jsScheduler_;
 #ifndef NDEBUG
   SingleInstanceChecker<NativeWorkletsModule> singleInstanceChecker_;
 #endif // NDEBUG

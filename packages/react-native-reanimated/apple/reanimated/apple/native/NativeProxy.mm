@@ -59,7 +59,6 @@ static inline bool getIsReducedMotion()
 std::shared_ptr<NativeReanimatedModule> createReanimatedModule(
     REAModule *reaModule,
     RCTBridge *bridge,
-    const std::shared_ptr<CallInvoker> &jsInvoker,
     WorkletsModule *workletsModule)
 {
   auto nodesManager = reaModule.nodesManager;
@@ -69,7 +68,6 @@ std::shared_ptr<NativeReanimatedModule> createReanimatedModule(
   PlatformDepMethodsHolder platformDepMethodsHolder = makePlatformDepMethodsHolder(bridge, nodesManager, reaModule);
 
   std::shared_ptr<UIScheduler> uiScheduler = std::make_shared<REAIOSUIScheduler>();
-  std::shared_ptr<JSScheduler> jsScheduler = std::make_shared<JSScheduler>(rnRuntime, jsInvoker);
   constexpr auto isBridgeless = false;
 
   const auto nativeWorkletsModule = [workletsModule getNativeWorkletsModule];
@@ -77,7 +75,6 @@ std::shared_ptr<NativeReanimatedModule> createReanimatedModule(
   auto nativeReanimatedModule = std::make_shared<NativeReanimatedModule>(
       nativeWorkletsModule,
       rnRuntime,
-      jsScheduler,
       uiScheduler,
       platformDepMethodsHolder,
       isBridgeless,

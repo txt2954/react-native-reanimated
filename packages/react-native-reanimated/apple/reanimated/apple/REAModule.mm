@@ -305,7 +305,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
 
     if (jsiRuntime) {
       auto nativeReanimatedModule =
-          reanimated::createReanimatedModule(self, self.bridge, self.bridge.jsCallInvoker, workletsModule);
+          reanimated::createReanimatedModule(self, self.bridge, workletsModule);
       jsi::Runtime &rnRuntime = *jsiRuntime;
 
       [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];
