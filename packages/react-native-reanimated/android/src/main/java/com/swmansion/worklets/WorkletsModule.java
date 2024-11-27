@@ -37,7 +37,10 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
 
   @OptIn(markerClass = FrameworkAPI.class)
   private native HybridData initHybrid(
-      long jsContext, String valueUnpackerCode, MessageQueueThread messageQueueThread, CallInvokerHolderImpl jsCallInvokerHolder);
+      long jsContext,
+      String valueUnpackerCode,
+      MessageQueueThread messageQueueThread,
+      CallInvokerHolderImpl jsCallInvokerHolder);
 
   public WorkletsModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -48,9 +51,11 @@ public class WorkletsModule extends NativeWorkletsModuleSpec {
   public boolean installTurboModule(String valueUnpackerCode) {
     var context = getReactApplicationContext();
     var jsContext = Objects.requireNonNull(context.getJavaScriptContextHolder()).get();
-    CallInvokerHolderImpl jsCallInvokerHolder = (CallInvokerHolderImpl) context.getJSCallInvokerHolder();
+    CallInvokerHolderImpl jsCallInvokerHolder =
+        (CallInvokerHolderImpl) context.getJSCallInvokerHolder();
 
-    mHybridData = initHybrid(jsContext, valueUnpackerCode, mMessageQueueThread, jsCallInvokerHolder);
+    mHybridData =
+        initHybrid(jsContext, valueUnpackerCode, mMessageQueueThread, jsCallInvokerHolder);
 
     return true;
   }

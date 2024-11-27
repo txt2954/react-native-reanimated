@@ -56,10 +56,8 @@ static inline bool getIsReducedMotion()
 #endif // __has_include(<UIKit/UIAccessibility.h>)
 }
 
-std::shared_ptr<NativeReanimatedModule> createReanimatedModule(
-    REAModule *reaModule,
-    RCTBridge *bridge,
-    WorkletsModule *workletsModule)
+std::shared_ptr<NativeReanimatedModule>
+createReanimatedModule(REAModule *reaModule, RCTBridge *bridge, WorkletsModule *workletsModule)
 {
   auto nodesManager = reaModule.nodesManager;
 
@@ -73,12 +71,7 @@ std::shared_ptr<NativeReanimatedModule> createReanimatedModule(
   const auto nativeWorkletsModule = [workletsModule getNativeWorkletsModule];
 
   auto nativeReanimatedModule = std::make_shared<NativeReanimatedModule>(
-      nativeWorkletsModule,
-      rnRuntime,
-      uiScheduler,
-      platformDepMethodsHolder,
-      isBridgeless,
-      getIsReducedMotion());
+      nativeWorkletsModule, rnRuntime, uiScheduler, platformDepMethodsHolder, isBridgeless, getIsReducedMotion());
 
   commonInit(reaModule, nativeReanimatedModule);
   // Layout Animation callbacks setup
@@ -108,17 +101,10 @@ std::shared_ptr<NativeReanimatedModule> createReanimatedModuleBridgeless(
 
   const auto nativeWorkletsModule = [workletsModule getNativeWorkletsModule];
   auto uiScheduler = std::make_shared<REAIOSUIScheduler>();
-  auto jsScheduler = std::make_shared<JSScheduler>(runtime, runtimeExecutor);
   constexpr auto isBridgeless = true;
 
   auto nativeReanimatedModule = std::make_shared<NativeReanimatedModule>(
-      nativeWorkletsModule,
-      runtime,
-      jsScheduler,
-      uiScheduler,
-      platformDepMethodsHolder,
-      isBridgeless,
-      getIsReducedMotion());
+      nativeWorkletsModule, runtime, uiScheduler, platformDepMethodsHolder, isBridgeless, getIsReducedMotion());
 
   commonInit(reaModule, nativeReanimatedModule);
 

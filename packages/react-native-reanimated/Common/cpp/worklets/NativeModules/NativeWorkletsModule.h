@@ -15,7 +15,7 @@ class NativeWorkletsModule : public NativeWorkletsModuleSpec {
   explicit NativeWorkletsModule(
       const std::string &valueUnpackerCode,
       const std::shared_ptr<MessageQueueThread> &jsQueue,
-      std::shared_ptr<JSScheduler> &&jsScheduler);
+      const std::shared_ptr<JSScheduler> &jsScheduler);
 
   ~NativeWorkletsModule();
 

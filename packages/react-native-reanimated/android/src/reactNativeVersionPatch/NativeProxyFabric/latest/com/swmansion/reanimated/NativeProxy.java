@@ -38,7 +38,6 @@ public class NativeProxy extends NativeProxyCommon {
           initHybridBridgeless(
               workletsModule,
               Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),
-              runtimeExecutor,
               mAndroidUIScheduler,
               LayoutAnimations,
               fabricUIManager);
@@ -49,7 +48,6 @@ public class NativeProxy extends NativeProxyCommon {
           initHybrid(
               workletsModule,
               Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),
-              callInvokerHolder,
               mAndroidUIScheduler,
               LayoutAnimations,
               fabricUIManager);
@@ -64,7 +62,6 @@ public class NativeProxy extends NativeProxyCommon {
   private native HybridData initHybrid(
       WorkletsModule workletsModule,
       long jsContext,
-      CallInvokerHolderImpl jsCallInvokerHolder,
       AndroidUIScheduler androidUIScheduler,
       LayoutAnimations LayoutAnimations,
       FabricUIManager fabricUIManager);
@@ -72,7 +69,6 @@ public class NativeProxy extends NativeProxyCommon {
   private native HybridData initHybridBridgeless(
       WorkletsModule workletsModule,
       long jsContext,
-      RuntimeExecutor runtimeExecutor,
       AndroidUIScheduler androidUIScheduler,
       LayoutAnimations LayoutAnimations,
       FabricUIManager fabricUIManager);

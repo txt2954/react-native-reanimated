@@ -21,11 +21,11 @@ namespace worklets {
 NativeWorkletsModule::NativeWorkletsModule(
     const std::string &valueUnpackerCode,
     const std::shared_ptr<MessageQueueThread> &jsQueue,
-    std::shared_ptr<JSScheduler> &&jsScheduler)
+    const std::shared_ptr<JSScheduler> &jsScheduler)
     : NativeWorkletsModuleSpec(nullptr),
       valueUnpackerCode_(valueUnpackerCode),
       jsQueue_(jsQueue),
-      jsScheduler_(std::move(jsScheduler)) {}
+      jsScheduler_(jsScheduler) {}
 
 NativeWorkletsModule::~NativeWorkletsModule() {}
 
