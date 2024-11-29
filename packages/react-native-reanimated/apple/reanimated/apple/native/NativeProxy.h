@@ -17,17 +17,8 @@ static inline bool getIsReducedMotion();
 std::shared_ptr<reanimated::NativeReanimatedModule> createReanimatedModule(
     REAModule *reaModule,
     RCTBridge *bridge,
-    WorkletsModule *workletsModule);
-
-#ifdef RCT_NEW_ARCH_ENABLED
-std::shared_ptr<reanimated::NativeReanimatedModule>
-createReanimatedModuleBridgeless(
-    REAModule *reaModule,
-    RCTModuleRegistry *moduleRegistry,
-    jsi::Runtime &runtime,
     WorkletsModule *workletsModule,
-    RuntimeExecutor runtimeExecutor);
-#endif // RCT_NEW_ARCH_ENABLED
+    bool isBridgeless);
 
 void commonInit(
     REAModule *reaModule,

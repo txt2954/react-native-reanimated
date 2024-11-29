@@ -57,7 +57,7 @@ static inline bool getIsReducedMotion()
 }
 
 std::shared_ptr<NativeReanimatedModule>
-createReanimatedModule(REAModule *reaModule, RCTBridge *bridge, WorkletsModule *workletsModule)
+createReanimatedModule(REAModule *reaModule, RCTBridge *bridge, WorkletsModule *workletsModule, bool isBridgeless)
 {
   auto nodesManager = reaModule.nodesManager;
 
@@ -66,7 +66,6 @@ createReanimatedModule(REAModule *reaModule, RCTBridge *bridge, WorkletsModule *
   PlatformDepMethodsHolder platformDepMethodsHolder = makePlatformDepMethodsHolder(bridge, nodesManager, reaModule);
 
   std::shared_ptr<UIScheduler> uiScheduler = std::make_shared<REAIOSUIScheduler>();
-  constexpr auto isBridgeless = false;
 
   const auto nativeWorkletsModule = [workletsModule getNativeWorkletsModule];
 
@@ -85,32 +84,6 @@ createReanimatedModule(REAModule *reaModule, RCTBridge *bridge, WorkletsModule *
 
   return nativeReanimatedModule;
 }
-
-#ifdef RCT_NEW_ARCH_ENABLED
-std::shared_ptr<NativeReanimatedModule> createReanimatedModuleBridgeless(
-    REAModule *reaModule,
-    RCTModuleRegistry *moduleRegistry,
-    jsi::Runtime &runtime,
-    WorkletsModule *workletsModule,
-    RuntimeExecutor runtimeExecutor)
-{
-  auto nodesManager = reaModule.nodesManager;
-
-  PlatformDepMethodsHolder platformDepMethodsHolder =
-      makePlatformDepMethodsHolderBridgeless(moduleRegistry, nodesManager, reaModule);
-
-  const auto nativeWorkletsModule = [workletsModule getNativeWorkletsModule];
-  auto uiScheduler = std::make_shared<REAIOSUIScheduler>();
-  constexpr auto isBridgeless = true;
-
-  auto nativeReanimatedModule = std::make_shared<NativeReanimatedModule>(
-      nativeWorkletsModule, runtime, uiScheduler, platformDepMethodsHolder, isBridgeless, getIsReducedMotion());
-
-  commonInit(reaModule, nativeReanimatedModule);
-
-  return nativeReanimatedModule;
-}
-#endif // RCT_NEW_ARCH_ENABLED
 
 void commonInit(REAModule *reaModule, std::shared_ptr<NativeReanimatedModule> nativeReanimatedModule)
 {

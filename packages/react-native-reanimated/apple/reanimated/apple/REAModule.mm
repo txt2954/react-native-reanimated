@@ -278,16 +278,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
 #ifdef RCT_NEW_ARCH_ENABLED
     RCTCxxBridge *cxxBridge = (RCTCxxBridge *)self.bridge;
     auto &rnRuntime = *(jsi::Runtime *)cxxBridge.runtime;
-    auto executorFunction = ([executor = _runtimeExecutor](std::function<void(jsi::Runtime & runtime)> &&callback) {
-      // Convert to Objective-C block so it can be captured properly.
-      __block auto callbackBlock = callback;
-
-      [executor execute:^(jsi::Runtime &runtime) {
-        callbackBlock(runtime);
-      }];
-    });
-    auto nativeReanimatedModule = reanimated::createReanimatedModuleBridgeless(
-        self, _moduleRegistry, rnRuntime, workletsModule, executorFunction);
+    auto nativeReanimatedModule =
+        reanimated::createReanimatedModule(self, _moduleRegistry, rnRuntime, workletsModule, isBridgeless);
     [self attachReactEventListener];
     [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];
 #else
@@ -299,7 +291,8 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
         : nullptr;
 
     if (jsiRuntime) {
-      auto nativeReanimatedModule = reanimated::createReanimatedModule(self, self.bridge, workletsModule);
+      auto nativeReanimatedModule =
+          reanimated::createReanimatedModule(self, self.bridge, workletsModule, _isBridgeless);
       jsi::Runtime &rnRuntime = *jsiRuntime;
 
       [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];
