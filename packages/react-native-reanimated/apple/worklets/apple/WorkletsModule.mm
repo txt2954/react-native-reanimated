@@ -30,6 +30,9 @@ using worklets::RNRuntimeWorkletDecorator;
 }
 
 @synthesize moduleRegistry = _moduleRegistry;
+#ifdef RCT_NEW_ARCH_ENABLED
+@synthesize runtimeExecutor = _runtimeExecutor;
+#endif // RCT_NEW_ARCH_ENABLED
 
 RCT_EXPORT_MODULE(WorkletsModule);
 
@@ -42,36 +45,25 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule : (nonnull NSString *)
   auto jsQueue = std::make_shared<REAMessageThread>([NSRunLoop currentRunLoop], ^(NSError *error) {
     throw error;
   });
+  std::shared_ptr<worklets::JSScheduler> jsScheduler = nullptr;
   if (isBridgeless_) {
 #ifdef RCT_NEW_ARCH_ENABLED
-    // TODO
+    auto executorFunction = ([executor = _runtimeExecutor](std::function<void(jsi::Runtime & runtime)> &&callback) {
+      // Convert to Objective-C block so it can be captured properly.
+      __block auto callbackBlock = callback;
+
+      [executor execute:^(jsi::Runtime &runtime) {
+        callbackBlock(runtime);
+      }];
+    });
+    jsScheduler = std::make_shared<worklets::JSScheduler>(rnRuntime, executorFunction);
 #else
-    // TODO
     [NSException raise:@"Missing bridge" format:@"[Reanimated] Failed to obtain the bridge."];
 #endif // RCT_NEW_ARCH_ENABLED
   } else {
-    //    facebook::jsi::Runtime *jsiRuntime = [self.bridge respondsToSelector:@selector(runtime)]
-    //    ? reinterpret_cast<facebook::jsi::Runtime *>(self.bridge.runtime)
-    //    : nullptr;
-    //
-    //    if (jsiRuntime) {
-    //      auto nativeReanimatedModule =
-    //          reanimated::createReanimatedModule(self, self.bridge, workletsModule);
-    //      jsi::Runtime &rnRuntime = *jsiRuntime;
-    //
-    //      [self commonInit:nativeReanimatedModule withRnRuntime:rnRuntime];
-    //        facebook::jsi::Runtime *jsiRuntime = [self.bridge respondsToSelector:@selector(runtime)]
-    //            ? reinterpret_cast<facebook::jsi::Runtime *>(self.bridge.runtime)
-    //            : nullptr;
-    //    jsi::Runtime &rnRuntime = *reinterpret_cast<facebook::jsi::Runtime *>(jsiRuntime);
-    //    const std::shared_ptr<facebook::react::CallInvoker> jsCallInvoker = self.bridge.jsCallInvoker;
-    auto jsScheduler = std::make_shared<worklets::JSScheduler>(rnRuntime, self.bridge.jsCallInvoker);
-    nativeWorkletsModule_ = std::make_shared<NativeWorkletsModule>(valueUnpackerCodeStr, jsQueue, jsScheduler);
-    //    }
+    jsScheduler = std::make_shared<worklets::JSScheduler>(rnRuntime, self.bridge.jsCallInvoker);
   }
-
-  //  nativeWorkletsModule_ = std::make_shared<NativeWorkletsModule>(std::string([valueUnpackerCode UTF8String]),
-  //  jsQueue);
+  nativeWorkletsModule_ = std::make_shared<NativeWorkletsModule>(valueUnpackerCodeStr, jsQueue, jsScheduler);
   RNRuntimeWorkletDecorator::decorate(rnRuntime, nativeWorkletsModule_);
 
   return @YES;

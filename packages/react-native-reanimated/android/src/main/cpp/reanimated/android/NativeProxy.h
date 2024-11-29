@@ -152,7 +152,8 @@ class NativeProxy : public jni::HybridClass<NativeProxy> {
       jni::alias_ref<WorkletsModule::javaobject> jWorkletsModule,
       jlong jsContext,
       jni::alias_ref<AndroidUIScheduler::javaobject> androidUiScheduler,
-      jni::alias_ref<LayoutAnimations::javaobject> layoutAnimations
+      jni::alias_ref<LayoutAnimations::javaobject> layoutAnimations,
+      const bool isBridgeless
 #ifdef RCT_NEW_ARCH_ENABLED
       ,
       jni::alias_ref<facebook::react::JFabricUIManager::javaobject>
@@ -160,16 +161,6 @@ class NativeProxy : public jni::HybridClass<NativeProxy> {
 #endif
   );
 
-#ifdef RCT_NEW_ARCH_ENABLED
-  static jni::local_ref<jhybriddata> initHybridBridgeless(
-      jni::alias_ref<jhybridobject> jThis,
-      jni::alias_ref<WorkletsModule::javaobject> jWorkletsModule,
-      jlong jsContext,
-      jni::alias_ref<AndroidUIScheduler::javaobject> androidUiScheduler,
-      jni::alias_ref<LayoutAnimations::javaobject> layoutAnimations,
-      jni::alias_ref<facebook::react::JFabricUIManager::javaobject>
-          fabricUIManager);
-#endif // RCT_NEW_ARCH_ENABLED
   static void registerNatives();
 
   ~NativeProxy();
@@ -275,7 +266,8 @@ class NativeProxy : public jni::HybridClass<NativeProxy> {
       const std::shared_ptr<NativeWorkletsModule> &nativeWorkletsModule,
       jsi::Runtime *rnRuntime,
       const std::shared_ptr<UIScheduler> &uiScheduler,
-      jni::global_ref<LayoutAnimations::javaobject> layoutAnimations
+      jni::global_ref<LayoutAnimations::javaobject> layoutAnimations,
+      const bool isBridgeless
 #ifdef RCT_NEW_ARCH_ENABLED
       ,
       jni::alias_ref<facebook::react::JFabricUIManager::javaobject>

@@ -7,7 +7,6 @@ import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.common.annotations.FrameworkAPI;
-import com.facebook.react.turbomodule.core.CallInvokerHolderImpl;
 import com.swmansion.reanimated.layoutReanimation.LayoutAnimations;
 import com.swmansion.reanimated.layoutReanimation.NativeMethodsHolder;
 import com.swmansion.reanimated.nativeProxy.NativeProxyCommon;
@@ -16,6 +15,9 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * @noinspection JavaJniMissingFunction
+ */
 public class NativeProxy extends NativeProxyCommon {
   @DoNotStrip
   @SuppressWarnings("unused")
@@ -24,16 +26,14 @@ public class NativeProxy extends NativeProxyCommon {
   @OptIn(markerClass = FrameworkAPI.class)
   public NativeProxy(ReactApplicationContext context, WorkletsModule workletsModule) {
     super(context);
-    CallInvokerHolderImpl holder =
-        (CallInvokerHolderImpl) context.getCatalystInstance().getJSCallInvokerHolder();
     LayoutAnimations LayoutAnimations = new LayoutAnimations(context);
     mHybridData =
         initHybrid(
             workletsModule,
             Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),
-            holder,
             mAndroidUIScheduler,
-            LayoutAnimations);
+            LayoutAnimations,
+            false);
     prepareLayoutAnimations(LayoutAnimations);
     installJSIBindings();
     if (BuildConfig.DEBUG) {
@@ -45,9 +45,9 @@ public class NativeProxy extends NativeProxyCommon {
   private native HybridData initHybrid(
       WorkletsModule workletsModule,
       long jsContext,
-      CallInvokerHolderImpl jsCallInvokerHolder,
       AndroidUIScheduler androidUIScheduler,
-      LayoutAnimations LayoutAnimations);
+      LayoutAnimations LayoutAnimations,
+      boolean isBridgeless);
 
   public native boolean isAnyHandlerWaitingForEvent(String eventName, int emitterReactTag);
 

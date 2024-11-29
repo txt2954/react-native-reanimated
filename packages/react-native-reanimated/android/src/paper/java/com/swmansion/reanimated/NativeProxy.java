@@ -32,7 +32,8 @@ public class NativeProxy extends NativeProxyCommon {
             workletsModule,
             Objects.requireNonNull(context.getJavaScriptContextHolder()).get(),
             mAndroidUIScheduler,
-            LayoutAnimations);
+            LayoutAnimations,
+            false);
     prepareLayoutAnimations(LayoutAnimations);
     installJSIBindings();
     if (BuildConfig.DEBUG) {
@@ -45,7 +46,8 @@ public class NativeProxy extends NativeProxyCommon {
       WorkletsModule workletsModule,
       long jsContext,
       AndroidUIScheduler androidUIScheduler,
-      LayoutAnimations LayoutAnimations);
+      LayoutAnimations LayoutAnimations,
+      boolean isBridgeless);
 
   public native boolean isAnyHandlerWaitingForEvent(String eventName, int emitterReactTag);
 
